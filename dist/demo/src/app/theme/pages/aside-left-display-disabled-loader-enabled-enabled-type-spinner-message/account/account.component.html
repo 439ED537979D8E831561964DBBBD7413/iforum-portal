@@ -1,0 +1,119 @@
+<!-- BEGIN: Subheader -->
+<div class="m-subheader" appunwraptag="">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <h3 class="m-subheader__title m-subheader__title--separator">
+                Account
+            </h3>
+            <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                <li class="m-nav__item m-nav__item--home">
+                    <a href="#" class="m-nav__link m-nav__link--icon">
+                        <i class="m-nav__link-icon la la-home"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- END: Subheader -->
+<div class="m-content">
+    <form [formGroup]="form" (submit)="onSubmit()" class="m-form m-form--fit m-form--label-align-right">
+        <div class="m-portlet__body">
+            <div class="form-group m-form__group" [class.has-danger]="!form.get('username').valid && form.get('username').touched">
+                <label for="username">Username</label>
+                <input formControlName="username" aria-describedby="usernameHelp" class="form-control m-input m-input--solid" id="username" placeholder="Username" type="text">
+                <div *ngIf="!form.get('username').valid && form.get('username').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+            </div>
+            <div class="form-group m-form__group" [class.has-danger]="!form.get('email').valid && form.get('email').touched">
+                <label for="email">Email</label>
+                <input formControlName="email" id="email" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="email" placeholder="Email" type="email">
+                <div *ngIf="!form.get('email').valid && form.get('email').touched" id="email-error" class="form-control-feedback">This field is required and email format .</div>
+            </div>
+            <div class="form-group m-form__group" [class.has-danger]="!form.get('password').valid && form.get('password').touched">
+                <label for="password">Password</label>
+                <input formControlName="password" id="password" aria-describedby="passwordHelp" class="form-control m-input m-input--solid" id="password" placeholder="Password" type="password">
+                <div *ngIf="!form.get('password').valid && form.get('password').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+            </div>
+            <div class="form-group m-form__group">
+                <div class="m-checkbox-list">
+                    <label class="m-checkbox m-checkbox--state-success">
+                        <input type="checkbox" formControlName="status" id="status">
+                        Registed
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__foot m-portlet__foot--fit">
+            <div class="m-form__actions">
+                <button class="btn btn-success" type="submit" [disabled]="!form.valid">
+                    Register
+                </button>
+                <button class="btn btn-secondary" type="button">
+                    All register
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="m_datatable" id="m_datatable_account"></div>
+
+    <!--end::Portlet-->
+    <!--begin::Modal-->
+    <div class="modal fade" id="m_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form [formGroup]="editForm" (submit)="onSubmitEdit()" class="m-form m-form--fit m-form--label-align-right">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            Edit Account
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">
+							&times;
+						</span>
+					</button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="m-portlet__body">
+                            <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_username').valid && editForm.get('e_username').touched">
+                                <label for="e_username">Username</label>
+                                <input formControlName="e_username" aria-describedby="usernameHelp" class="form-control m-input m-input--solid" id="e_username" placeholder="Username" type="text">
+                                <div *ngIf="!editForm.get('e_username').valid && editForm.get('e_username').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+                            </div>
+                            <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_email').valid && editForm.get('e_email').touched">
+                                <label for="e_email">Email</label>
+                                <input formControlName="e_email" id="email" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="e_email" placeholder="Email" type="email">
+                                <div *ngIf="!editForm.get('e_email').valid && editForm.get('e_email').touched" id="email-error" class="form-control-feedback">This field is required and email format .</div>
+                            </div>
+                            <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_password').valid && editForm.get('e_password').touched">
+                                <label for="e_password">Password</label>
+                                <input formControlName="e_password" id="password" aria-describedby="passwordHelp" class="form-control m-input m-input--solid" id="e_password" placeholder="Password" type="password">
+                                <div *ngIf="!editForm.get('e_password').valid && editForm.get('e_password').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+                            </div>
+                            <div class="form-group m-form__group">
+                                <div class="m-checkbox-list">
+                                    <label class="m-checkbox m-checkbox--state-success">
+                                        <input type="checkbox" formControlName="e_status" id="e_status">
+                                        Registed
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__foot m-portlet__foot--fit">
+                            <div class="m-form__actions">
+                                <button class="btn btn-success" type="submit" [disabled]="!editForm.valid">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--end::Modal-->
+    <!--begin::Modal-->
+</div>
