@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Add Category
+                Thêm chuyên mục
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -19,25 +19,24 @@
 <div class="m-content">
     <form [formGroup]="form" (submit)="onSubmit()" class="m-form m-form--fit m-form--label-align-right">
         <div class="m-portlet__body">
+            <div class="form-group m-form__group row" [class.has-danger]="!form.get('name').valid && form.get('name').touched">
+                <label for="exampleInputEmail1">Chuyên mục</label>
+                <input formControlName="name" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="exampleInputEmail1" placeholder="Category" type="text">
+                <div *ngIf="!form.get('name').valid && form.get('name').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+            </div>
+
             <div class="form-group m-form__group row">
-                <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('name').valid && form.get('name').touched">
-                    <label for="exampleInputEmail1">Category</label>
-                    <input formControlName="name" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="exampleInputEmail1" placeholder="Category" type="text">
-                    <div *ngIf="!form.get('name').valid && form.get('name').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-                </div>
-                <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleTextarea">Content</label>
-                    <textarea class="form-control m-input m-input--solid summernote" id="exampleTextarea" rows="10"></textarea>
-                </div>
+                <label for="exampleTextarea">Nội dung</label>
+                <textarea class="form-control m-input m-input--solid summernote" id="exampleTextarea" rows="10"></textarea>
             </div>
         </div>
         <div class="m-portlet__foot m-portlet__foot--fit">
             <div class="m-form__actions">
                 <button class="btn btn-success" type="submit" [disabled]="!form.valid">
-                    Submit
+                    Gửi
                 </button>
                 <button class="btn btn-secondary" type="reset">
-                    Cancel
+                    Hủy
                 </button>
             </div>
         </div>

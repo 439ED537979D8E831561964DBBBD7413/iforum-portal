@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Account
+                Tài khoản
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -20,7 +20,7 @@
     <form [formGroup]="form" (submit)="onSubmit()" class="m-form m-form--fit m-form--label-align-right">
         <div class="m-portlet__body">
             <div class="form-group m-form__group" [class.has-danger]="!form.get('username').valid && form.get('username').touched">
-                <label for="username">Username</label>
+                <label for="username">Tên người dùng</label>
                 <input formControlName="username" aria-describedby="usernameHelp" class="form-control m-input m-input--solid" id="username" placeholder="Username" type="text">
                 <div *ngIf="!form.get('username').valid && form.get('username').touched" id="email-error" class="form-control-feedback">This field is required.</div>
             </div>
@@ -30,27 +30,18 @@
                 <div *ngIf="!form.get('email').valid && form.get('email').touched" id="email-error" class="form-control-feedback">This field is required and email format .</div>
             </div>
             <div class="form-group m-form__group" [class.has-danger]="!form.get('password').valid && form.get('password').touched">
-                <label for="password">Password</label>
+                <label for="password">Mật khẩu</label>
                 <input formControlName="password" id="password" aria-describedby="passwordHelp" class="form-control m-input m-input--solid" id="password" placeholder="Password" type="password">
                 <div *ngIf="!form.get('password').valid && form.get('password').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-            </div>
-            <div class="form-group m-form__group">
-                <div class="m-checkbox-list">
-                    <label class="m-checkbox m-checkbox--state-success">
-                        <input type="checkbox" formControlName="status" id="status">
-                        Registed
-                        <span></span>
-                    </label>
-                </div>
             </div>
         </div>
         <div class="m-portlet__foot m-portlet__foot--fit">
             <div class="m-form__actions">
                 <button class="btn btn-success" type="submit" [disabled]="!form.valid">
-                    Register
+                    Đăng ký
                 </button>
                 <button class="btn btn-secondary" type="button">
-                    All register
+                    Đăng ký tất cả
                 </button>
             </div>
         </div>
@@ -66,7 +57,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            Edit Account
+                            Sửa tài khoản
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">
@@ -78,7 +69,7 @@
 
                         <div class="m-portlet__body">
                             <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_username').valid && editForm.get('e_username').touched">
-                                <label for="e_username">Username</label>
+                                <label for="e_username">Tên người dùng</label>
                                 <input formControlName="e_username" aria-describedby="usernameHelp" class="form-control m-input m-input--solid" id="e_username" placeholder="Username" type="text">
                                 <div *ngIf="!editForm.get('e_username').valid && editForm.get('e_username').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                             </div>
@@ -88,24 +79,15 @@
                                 <div *ngIf="!editForm.get('e_email').valid && editForm.get('e_email').touched" id="email-error" class="form-control-feedback">This field is required and email format .</div>
                             </div>
                             <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_password').valid && editForm.get('e_password').touched">
-                                <label for="e_password">Password</label>
+                                <label for="e_password">Mật khẩu</label>
                                 <input formControlName="e_password" id="password" aria-describedby="passwordHelp" class="form-control m-input m-input--solid" id="e_password" placeholder="Password" type="password">
                                 <div *ngIf="!editForm.get('e_password').valid && editForm.get('e_password').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-                            </div>
-                            <div class="form-group m-form__group">
-                                <div class="m-checkbox-list">
-                                    <label class="m-checkbox m-checkbox--state-success">
-                                        <input type="checkbox" formControlName="e_status" id="e_status">
-                                        Registed
-                                        <span></span>
-                                    </label>
-                                </div>
                             </div>
                         </div>
                         <div class="m-portlet__foot m-portlet__foot--fit">
                             <div class="m-form__actions">
                                 <button class="btn btn-success" type="submit" [disabled]="!editForm.valid">
-                                    Edit
+                                    Sửa
                                 </button>
                             </div>
                         </div>

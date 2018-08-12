@@ -44,7 +44,10 @@ export class CommentCategoryComponent implements OnInit {
 
     formEdit(id) {
         this._http.get(this.urlGetCommentCategory + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 console.log(data);
@@ -66,10 +69,13 @@ export class CommentCategoryComponent implements OnInit {
         }
         if (this.editForm.valid) {
             var dataS = {
-                username: this.editForm.get('e_name').value,
+                name: this.editForm.get('e_name').value,
             }
             this._http.post(this.urlEditCommentCategory, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -86,7 +92,7 @@ export class CommentCategoryComponent implements OnInit {
     urlEditCommentCategory = this._callApi.createUrl('commentcategory/edit');
     urlGetCommentCategory = this._callApi.createUrl('commentcategory/id/');
     urlDeleteCommentCategory = this._callApi.createUrl('commentcategory/delete/');
-    urlCommentCategory = this._callApi.createUrl('commentcategory/website/1');
+    urlCommentCategory = this._callApi.createUrl('commentcategory/all');
 
     form = this._formBuilder.group({
         name: new FormControl('', Validators.required),
@@ -103,7 +109,10 @@ export class CommentCategoryComponent implements OnInit {
         }
         if (this.form.valid) {
             this._http.post(this.urlAddCommentCategory, JSON.stringify(this.form.value), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -126,6 +135,9 @@ export class CommentCategoryComponent implements OnInit {
                 read: {
                     url: this.urlCommentCategory,
                     method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
@@ -163,11 +175,11 @@ export class CommentCategoryComponent implements OnInit {
             textAlign: 'center'
         },{
             field: "name",
-            title: "Category",
+            title: "Loại",
             textAlign: 'center'
         }, {
             field: "Actions",
-            title: "Actions",
+            title: "Sự kiện",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
@@ -197,7 +209,10 @@ export class CommentCategoryComponent implements OnInit {
 
     delete(id) {
         this._http.get(this.urlDeleteCommentCategory + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();

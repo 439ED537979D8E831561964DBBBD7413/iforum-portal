@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Enter Category
+                Link chuyên mục
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -26,12 +26,12 @@
                     <div *ngIf="!form.get('urlPost').valid && form.get('urlPost').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
                 <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleSelect1">Category</label>
+                    <label for="exampleSelect1">Loại</label>
                     <select formControlName="idCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
                         <option *ngFor="let cc of listCategory" value="{{ cc.id }}">{{ cc.name }}</option>
                     </select>
                 </div>
-                <div class="col-lg-6 m-form__group-sub">
+                <!-- <div class="col-lg-6 m-form__group-sub">
                     <label for="exampleSelect1">Category Comment</label>
                     <select formControlName="commentCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
                         <option *ngFor="let cc of listCommentCategory" value="{{ cc.id }}">{{ cc.name }}</option>
@@ -42,10 +42,10 @@
                     <select formControlName="commentCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
                         <option *ngFor="let cc of listAccount" value="{{ cc.id }}">{{ cc.username }}</option>
                     </select>
-                </div>
+                </div> -->
                 <div class="col-lg-6 m-form__group-sub">
                     <label for="exampleSelect1">Website</label>
-                    <select formControlName="idWeb" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
+                    <select formControlName="idWeb" class="form-control m-input m-input--solid" id="exampleSelect1">
                         <option *ngFor="let cc of listWeb" value="{{ cc.id }}">{{ cc.name }}</option>
                     </select>
                 </div>
@@ -54,14 +54,15 @@
         <div class="m-portlet__foot m-portlet__foot--fit">
             <div class="m-form__actions">
                 <button class="btn btn-success" type="submit">
-                    Submit
+                    Gửi
                 </button>
                 <button class="btn btn-secondary" type="reset">
-                    Cancel
+                    Hủy
                 </button>
             </div>
         </div>
     </form>
 
     <div class="m_datatable" id="m_datatable_category"></div>
+
 </div>

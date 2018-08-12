@@ -23,6 +23,7 @@ export class PostComponent implements OnInit {
     }
     ngOnInit() {
         this.getDataPostCategory();
+        this.getDataCommentCategory();
     }
     ngAfterViewInit() {
         this._script.loadScripts('app-index',
@@ -36,6 +37,7 @@ export class PostComponent implements OnInit {
 
     form = this._formBuilder.group({
         idCategory: new FormControl('', Validators.required),
+        idCommentCategory: new FormControl('', Validators.required),
         title: new FormControl('', Validators.required),
         time1: new FormControl('', Validators.required),
         time2: new FormControl('', Validators.required),
@@ -47,10 +49,12 @@ export class PostComponent implements OnInit {
     });
 
     listCategory: any;
+    listCommentCategory: any;
     summernote: any;
   
     urlPost = this._callApi.createUrl('task/postcategory');
     urlGetCategoryPost = this._callApi.createUrl('postcategory/all');
+    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
 
     onSubmit() {
         if (!this.form.valid) {
@@ -61,6 +65,7 @@ export class PostComponent implements OnInit {
                 'idWeb': 1,
                 'content': (<any>$(this.summernote).val()),
                 'idCategory': this.form.get('idCategory').value,
+                'idCommentCategory': this.form.get('idCommentCategory').value,
                 'title': this.form.get('title').value,
                 'timeSleep': [
                     this.form.get('time1').value,
@@ -87,6 +92,13 @@ export class PostComponent implements OnInit {
             headers: { 'Content-Type': 'application/json'}
         }).subscribe((data) => {
             this.listCategory = data;
+        })
+    }
+    getDataCommentCategory() {
+        this._http.get(this.urlGetCommentCategory, {
+            headers: { 'Content-Type': 'application/json'}
+        }).subscribe((data) => {
+            this.listCommentCategory = data;
         })
     }
 }

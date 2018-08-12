@@ -6,6 +6,8 @@ import { AlertService } from './_services/alert.service';
 import { UserService } from './_services/user.service';
 import { AlertComponent } from './_directives/alert.component';
 import { Helpers } from '../helpers';
+import { HttpClient } from '@angular/common/http';
+import { CallApiService } from '../theme/_services/call-api.service';
 
 declare let $: any;
 declare let mUtil: any;
@@ -35,6 +37,8 @@ export class AuthComponent implements OnInit {
         private _route: ActivatedRoute,
         private _authService: AuthenticationService,
         private _alertService: AlertService,
+        private _http: HttpClient,
+        private _callApi: CallApiService,
         private cfr: ComponentFactoryResolver) {
     }
 
@@ -54,18 +58,37 @@ export class AuthComponent implements OnInit {
                 this.handleForgetPasswordFormSubmit();
             });
     }
-
+    urlLogin = this._callApi.createUrl('login');
     signin() {
         this.loading = true;
-        this._authService.login(this.model.email, this.model.password).subscribe(
-            data => {
-                this._router.navigate([this.returnUrl]);
-            },
-            error => {
-                this.showAlert('alertSignin');
-                this._alertService.error(error);
-                this.loading = false;
-            });
+        // this._authService.login(this.model.email, this.model.password)
+        // .subscribe(
+        //     data => {
+        //         this._router.navigate([this.returnUrl]);
+        //     },
+        //     error => {
+        //         this.showAlert('alertSignin');
+        //         this._alertService.error(error);
+        //         this.loading = false;
+        //     });
+        this.returnUrl = 'index';
+        this._http.post(this.urlLogin,  JSON.stringify({ username: this.model.email, password: this.model.password }), {
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            }).subscribe(
+                (data) => {
+                    // console.log(data);
+                    localStorage.setItem('Auth-Token', data['message']);
+                    this._router.navigate([this.returnUrl]);
+                },
+                (error) => {
+                    this.showAlert('alertSignin');
+                    this._alertService.error(error);
+                    this.loading = false;
+                }
+            );
     }
 
     signup() {

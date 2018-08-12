@@ -16,24 +16,34 @@ export class IndexComponent implements OnInit, AfterViewInit {
         private _callApi: CallApiService
     ) {}
 
-    public urlForum = this._callApi.createUrl('website/all');
+    public urlForum = this._callApi.createUrl('task/all');
     public options = {
         data: {
             type: 'remote',
             source: {
                 read: {
                     url: this.urlForum,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    },
+                    xhrFields: {
+                        withCredentials: true
+                    }
                 }
             },
             pageSize: 10,
             saveState: {
-                cookie: false,
+                cookie: true,
                 webstorage: true
             },
             serverPaging: true,
             serverFiltering: true,
-            serverSorting: true
+            serverSorting: true,
+        },
+
+        xhrFields: {
+            withCredentials: true
         },
 
         layout: {
@@ -65,24 +75,45 @@ export class IndexComponent implements OnInit, AfterViewInit {
             sortable: 'asc',
             filterable: false,
         }, {
-            field: "name",
+            field: "title",
             title: "Web",
-        }, 
-        // {
-        //     field: "comment_last",
-        //     title: "Detail last comment",
-        //     width: 150,
-        //     responsive: {
-        //         visible: 'lg'
-        //     }
-        // },{
-        //     field: "reply_last",
-        //     title: "Detail last reply",
-        //     width: 150,
-        //     responsive: {
-        //         visible: 'lg'
-        //     }
-        // }
+            template: function(row, index, datatable) {
+                var matches = row.url.match('^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)');
+                var domain = matches && matches[1];
+                console.log(domain)
+                return domain;
+            }
+        },{
+            field: "comment_last",
+            title: "Bình luận cuối",
+            template: function(row, index, datatable) {
+                var ct = row.commentTasks[0];
+                if (!ct) {
+                    return '';
+                }
+                if (ct.status != 2) {
+                    return ct.comment.contentComment;
+                }
+                return ct.accountComment.username +' - '+ ct.description;
+            }
+        },{
+            field: "replyt_last",
+            title: "Trả lời cuối",
+            sortable: false,
+            template: function(row, index, datatable) {
+                var ct = row.commentTasks[0];
+                if (!ct) {
+                    return '';
+                }
+                if (ct.status === 1) {
+                    return ct.comment.contentReply;
+                }
+                if (ct.status === 2) {
+                    return '';
+                }
+                return ct.description;
+            }
+        },
     ]
     }
 

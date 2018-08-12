@@ -50,7 +50,7 @@ export class CommentContentComponent implements OnInit {
         // let tag = (<any>$('.tag').select());
     }
 
-    urlGetCommentCategory = this._callApi.createUrl('commentcategory/website/1');
+    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
     urlGetComment = this._callApi.createUrl('comment/category/');
     urlAddComment = this._callApi.createUrl('comment/add');
     urlEditComment = this._callApi.createUrl('comment/edit');
@@ -75,7 +75,10 @@ export class CommentContentComponent implements OnInit {
     
     formEdit(id) {
         this._http.get(this.urlGetCommentById + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 console.log(data);
@@ -106,8 +109,11 @@ export class CommentContentComponent implements OnInit {
                 'idCategory': this.form.get('idCategory').value,
                 'id': 1,
             }
-            this._http.post(this.urlAddComment, dataS, {
-                headers: { 'Content-Type': 'application/json'}
+            this._http.post(this.urlAddComment, dataS, { 
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     console.log(data);
@@ -134,7 +140,10 @@ export class CommentContentComponent implements OnInit {
                 'id': this.form.get('e_id').value,
             }
             this._http.post(this.urlEditComment, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -161,7 +170,10 @@ export class CommentContentComponent implements OnInit {
             source: {
                 read: {
                     url: this.urlGetComment + 1,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
@@ -199,15 +211,15 @@ export class CommentContentComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "contentComment",
-            title: "Comment Content",
+            title: "Nội dung bình luận",
             sortable: 'asc',
         }, {
             field: "contentReply",
-            title: "Reply content",
+            title: "Nội dung trả lời",
             sortable: 'asc',
         }, {
             field: "Actions",
-            title: "Actions",
+            title: "Sự kiện",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
@@ -231,7 +243,10 @@ export class CommentContentComponent implements OnInit {
 
     delete(id) {
         this._http.get(this.urlDeleteComment + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();
@@ -245,7 +260,10 @@ export class CommentContentComponent implements OnInit {
 
     getDataCommentCategory() {
         this._http.get(this.urlGetCommentCategory, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.commentCategory = data;
         })

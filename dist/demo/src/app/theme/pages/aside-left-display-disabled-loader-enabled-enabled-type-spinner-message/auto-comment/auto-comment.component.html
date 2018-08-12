@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Auto Comment
+                Tự động bình luận
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -20,20 +20,20 @@
     <form [formGroup]="form" (submit)="onSubmit()" class="m-form m-form--fit m-form--label-align-right">
         <div class="m-portlet__body">
             <div class="form-group m-form__group" [class.has-danger]="!form.get('urlPost').valid && form.get('urlPost').touched">
-                <label for="exampleInputEmail1">Link post:</label>
+                <label for="exampleInputEmail1">Link đăng tin:</label>
                 <input formControlName="urlPost" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="exampleInputEmail1" placeholder="Title" type="text">
                 <div *ngIf="!form.get('urlPost').valid && form.get('urlPost').touched" id="email-error" class="form-control-feedback">This field is required.</div>
             </div>
             <div class="form-group m-form__group row">
                 <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('idCommentCategory').valid && form.get('idCommentCategory').touched">
-                    <label for="exampleSelect1">Comment content</label>
+                    <label for="exampleSelect1">Nội dung bình luận</label>
                     <select formControlName="idCommentCategory" class="form-control m-input m-input--solid" id="exampleSelect1">
                         <option *ngFor="let acc of listcommentCategory" value="{{ acc.id }}">{{ acc.name }}</option>
                     </select>
                     <div *ngIf="!form.get('idCommentCategory').valid && form.get('idCommentCategory').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
                 <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('idAccount').valid && form.get('idAccount').touched">
-                    <label for="exampleSelect1">User post</label>
+                    <label for="exampleSelect1">Tài khoản đăng bài</label>
                     <select formControlName="idAccount" class="form-control m-input m-input--solid" id="exampleSelect1">
                         <option *ngFor="let acc of listAccount" value="{{ acc.id }}">{{ acc.username }}</option>
                     </select>
@@ -62,7 +62,7 @@
                     <div *ngIf="!form.get('time4').valid && form.get('time4').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
                 <div class="col-lg-3 m-form__group-sub" [class.has-danger]="!form.get('viewCount').valid && form.get('viewCount').touched">
-                    <label for="exampleSelect1">View Count:</label>
+                    <label for="exampleSelect1">Lượng view:</label>
                     <input formControlName="viewCount" aria-describedby="emailHelp" class="form-control m-input m-input--solid" type="text">
                     <div *ngIf="!form.get('viewCount').valid && form.get('viewCount').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
@@ -71,10 +71,10 @@
         <div class="m-portlet__foot m-portlet__foot--fit">
             <div class="m-form__actions">
                 <button class="btn btn-success" type="submit" [disabled]="!form.valid">
-                    Submit
+                    Gửi
                 </button>
                 <button class="btn btn-secondary" type="reset">
-                    Cancel
+                    Hủy
                 </button>
             </div>
         </div>

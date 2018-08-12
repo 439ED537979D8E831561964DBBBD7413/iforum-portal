@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Comment Category
+                Loại bình luận
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -21,7 +21,7 @@
         <div class="m-portlet__body">
             <div class="form-group m-form__group row">
                 <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('name').valid && form.get('name').touched">
-                    <label for="name">Category</label>
+                    <label for="name">Loại</label>
                     <input formControlName="name" aria-describedby="emailHelp" class="form-control m-input m-input--solid" placeholder="Category" type="text">
                     <div *ngIf="!form.get('name').valid && form.get('name').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
@@ -30,10 +30,10 @@
         <div class="m-portlet__foot m-portlet__foot--fit">
             <div class="m-form__actions">
                 <button class="btn btn-success" type="submit">
-                    Add
+                    Thêm
                 </button>
                 <button class="btn btn-secondary" type="reset">
-                    Cancel
+                    Hủy
                 </button>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            Edit
+                            Sửa loại bình luận
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">
@@ -59,7 +59,7 @@
 
                         <div class="m-portlet__body">
                             <div class="form-group m-form__group" [class.has-danger]="!editForm.get('e_name').valid && editForm.get('e_name').touched">
-                                <label for="e_username">Category</label>
+                                <label for="e_username">Loại</label>
                                 <input formControlName="e_name" aria-describedby="usernameHelp" class="form-control m-input m-input--solid" id="e_name" placeholder="Username" type="text">
                                 <div *ngIf="!editForm.get('e_name').valid && editForm.get('e_name').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                             </div>
@@ -67,7 +67,7 @@
                         <div class="m-portlet__foot m-portlet__foot--fit">
                             <div class="m-form__actions">
                                 <button class="btn btn-success" type="submit" [disabled]="!editForm.valid">
-                                    Edit
+                                    Sửa
                                 </button>
                             </div>
                         </div>

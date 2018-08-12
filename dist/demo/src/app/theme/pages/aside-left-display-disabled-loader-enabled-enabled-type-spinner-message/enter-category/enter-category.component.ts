@@ -23,9 +23,9 @@ export class EnterCategoryComponent implements OnInit {
 
     }
     ngOnInit() {
-        this.getDataAccount();
+        // this.getDataAccount();
         this.getDataCategory();
-        this.getDataCommentCategory();
+        // this.getDataCommentCategory();
         this.getDataWeb();
     }
     ngAfterViewInit() {
@@ -39,7 +39,7 @@ export class EnterCategoryComponent implements OnInit {
         $(document).on('click', '.open_dialoga', (event) => {
             console.log($(event.target).parent().data('element-id'));
             this.formEdit($(event.target).parent().data('element-id'));
-            $('#m_modal').modal();
+            // $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
         $(document).on('click', '.deletea', (event) => {
@@ -50,13 +50,15 @@ export class EnterCategoryComponent implements OnInit {
     form = this._formBuilder.group({
         urlPost: new FormControl('', Validators.required),
         idCategory: new FormControl('',Validators.required),
-        accountPost: new FormControl('', Validators.required),
-        commentCategory: new FormControl('',Validators.required),
-        idWeb: new FormControl('1'),
+        // accountPost: new FormControl('', Validators.required),
+        // commentCategory: new FormControl('',Validators.required),
+        idWeb: new FormControl('',Validators.required),
     });
 
     editForm = this._formBuilder.group({
-        e_name: new FormControl('', Validators.required),
+        e_urlPost: new FormControl('', Validators.required),
+        e_idCategory: new FormControl(null),
+        e_idWeb: new FormControl(null),
     });
 
     urlGetLinkPost = this._callApi.createUrl('linkpost/all');
@@ -75,13 +77,18 @@ export class EnterCategoryComponent implements OnInit {
     listCommentCategory: any;
     listCategory: any;
 
+    idCactegory = 1;
+
     onSubmit() {
         if (!this.form.valid) {
             return;
         }
         if (this.form.valid) {
             this._http.post(this.urlAddLinkPost, JSON.stringify(this.form.value), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -95,11 +102,15 @@ export class EnterCategoryComponent implements OnInit {
     }
     onSubmitEdit() {
             var dataS= {
+                'urlPost': this.form.get('e_urlPost').value,
                 'idCategory': this.form.get('e_idCategory').value,
-                'id': this.form.get('e_id').value,
+                'idWeb': this.form.get('e_idWeb').value,
             }
             this._http.post(this.urlEditLinkPost, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -113,13 +124,18 @@ export class EnterCategoryComponent implements OnInit {
 
     formEdit(id) {
         this._http.get(this.urlGetLinkPostById + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 console.log(data);
                 // var dataParse = JSON.parse(data);
-                this.editForm = this._formBuilder.group({
-                    e_name: new FormControl(data['name'], Validators.required),
+                this.form = this._formBuilder.group({
+                    urlPost: new FormControl(data['urlPost'], Validators.required),
+                    idCategory: new FormControl(data['idCategory'], Validators.required),
+                    idWeb: new FormControl(data['idWeb'], Validators.required),
                 });
             },
             (error) => {
@@ -132,15 +148,26 @@ export class EnterCategoryComponent implements OnInit {
     delete(id) {
 
     }
+
+    onChange(value) {
+        this.idCactegory = 1;
+        this.chRef.detectChanges();
+        
+        this.datatable.reload();
+    }
     //datatables
     public datatable: any;
+    linkPosCategory = this.urlGetLinkPost + this.idCactegory;
     public options = {
         data: {
             type: 'remote',
             source: {
                 read: {
-                    url: this.urlGetLinkPost,
-                    method: 'GET'
+                    url: this.linkPosCategory,
+                    method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
@@ -215,7 +242,10 @@ export class EnterCategoryComponent implements OnInit {
 
     getDataAccount() {
         this._http.get(this.urlGetAccount, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listAccount = data;
         })
@@ -223,7 +253,10 @@ export class EnterCategoryComponent implements OnInit {
 
     getDataWeb() {
         this._http.get(this.urlGetWeb, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listWeb = data;
         })
@@ -231,7 +264,10 @@ export class EnterCategoryComponent implements OnInit {
 
     getDataCommentCategory() {
         this._http.get(this.urlGetCommentCategory, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listCommentCategory = data;
         })
@@ -239,7 +275,10 @@ export class EnterCategoryComponent implements OnInit {
 
     getDataCategory() {
         this._http.get(this.urlGetCategory, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listCategory = data;
         })

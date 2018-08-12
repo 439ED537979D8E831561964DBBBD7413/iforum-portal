@@ -60,13 +60,13 @@ export class AutoCommentComponent implements OnInit {
         time2: new FormControl('', Validators.required),
         time3: new FormControl('', Validators.required),
         time4: new FormControl('', Validators.required),
-        viewCount: new FormControl('', Validators.required),
+        viewCount: new FormControl(''),
         idAccount: new FormControl(''),
         idWeb: new FormControl('1'),
     });
     count = new FormControl(0);
     urlAddAccount = this._callApi.createUrl('account/add');
-    urlGetCommentCategory = this._callApi.createUrl('commentcategory/website/1');
+    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
     urlGetAccount = this._callApi.createUrl('account/website/1');
 
     urlGetTask = this._callApi.createUrl('task/all');
@@ -89,7 +89,7 @@ export class AutoCommentComponent implements OnInit {
             var dataS = {
                 'id': 0,
                 'idWeb': 1,
-                'idUserPost': this.form.get('idAccount').value,
+                'idAccountPost': this.form.get('idAccount').value,
                 'idCommentCategory': this.form.get('idCommentCategory').value,
                 'url': this.form.get('urlPost').value,
                 'timeSleep': [
@@ -98,10 +98,13 @@ export class AutoCommentComponent implements OnInit {
                     this.form.get('time3').value,
                     this.form.get('time4').value
                 ],
-                'viewCount': this.form.get('viewCount').value
+                'viewCount': this.form.get('viewCount').value || 0
             }
             this._http.post(this.urlAddTask, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -123,7 +126,10 @@ export class AutoCommentComponent implements OnInit {
             source: {
                 read: {
                     url: this.urlGetTask,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
@@ -161,43 +167,40 @@ export class AutoCommentComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "title",
-            title: "Title-Link",
+            title: "Tiêu đề",
             sortable: 'asc',
             filterable: false,
-            width: 100,
         }, {
-            field: "viewCount",
-            title: "View Count",
+            field: "viewNumber",
+            title: "Số lượng view",
             width: 100,
             textAlign: 'center'
         },{
             field: "commentNumber",
-            title: "Comment Number",
+            title: "Số lượng bình luận",
             width: 100,
             textAlign: 'center'
         },{
             field: "description",
-            title: "Status",
+            title: "Tiến trình",
             width: 100,
             textAlign: 'center',
         },{
             field: "status",
-            title: "Status",
+            title: "Trạng thái",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
                 var status = {
                     0: {
-                        'title': `<button data-element-id="${row.id}" class="hand-pointer-o m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Init">
-                        <svg style='width: 0.625em;' aria-hidden="true" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-sort fa-w-10 fa-spin fa-lg"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z" class=""></path></svg>
-                        </button>`,
-                        'class': 'm--font-success fa fa-hand-pointer-o'
-                    },
-                    1: {
                         'title': `<button data-element-id="${row.id}" class="play m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
                         'class': 'm--font-success fa fa-play'
                     },
                     2: {
+                        'title': `<button data-element-id="${row.id}" class="play m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
+                        'class': 'm--font-success fa fa-play'
+                    },
+                    1: {
                         'title': `<button data-element-id="${row.id}" class="pause m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Pause"><i class=" fa fa-pause"></i></button>`,
                         'class': 'm--font-success fa fa-pause'
                     },
@@ -214,7 +217,7 @@ export class AutoCommentComponent implements OnInit {
             }
         },{
             field: "Actions",
-            title: "Actions",
+            title: "Sự kiện",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
@@ -234,21 +237,30 @@ export class AutoCommentComponent implements OnInit {
 
     getDataCommentCategory() {
         this._http.get(this.urlGetCommentCategory, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listcommentCategory = data;
         })
     };
     getDataAccount() {
         this._http.get(this.urlGetAccount, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listAccount = data;
         })
     };
     getDataTask() {
         this._http.get(this.urlGetTask, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe((data) => {
             this.listTask = data;
         })
@@ -263,7 +275,9 @@ export class AutoCommentComponent implements OnInit {
 
     play(id) {
         this._http.get(this.urlResumeTask + id, {
-            // headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();
@@ -276,7 +290,9 @@ export class AutoCommentComponent implements OnInit {
     }
     pause(id) {
         this._http.get(this.urlPauseTask + id, {
-            // headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();
@@ -289,7 +305,9 @@ export class AutoCommentComponent implements OnInit {
     }
     stop(id) {
         this._http.get(this.urlStopTask + id, {
-            // headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();

@@ -77,7 +77,10 @@ export class AccountComponent implements OnInit {
     
     formEdit(id) {
         this._http.get(this.urlGetAccount + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 console.log(data);
@@ -111,8 +114,19 @@ export class AccountComponent implements OnInit {
             return;
         }
         if (this.form.valid) {
-            this._http.post(this.urlAddAccount, JSON.stringify(this.form.value), {
-                headers: { 'Content-Type': 'application/json'}
+            console.log(this.form.value);
+            var data = {
+                'username': this.form.get('username').value,
+                'email': this.form.get('email').value,
+                'password': this.form.get('password').value,
+                'status': this.form.get('status').value || 0,
+                'idWeb': this.form.get('idWeb').value,
+            }
+            this._http.post(this.urlAddAccount, JSON.stringify(data), {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -161,6 +175,9 @@ export class AccountComponent implements OnInit {
                 read: {
                     url: this.urlApi,
                     method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
@@ -198,18 +215,18 @@ export class AccountComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "username",
-            title: "User",
+            title: "Tài khoản",
             sortable: 'asc',
             filterable: false,
             width: 100,
         }, {
             field: "password",
-            title: "Password",
+            title: "Mật khẩu",
             width: 100,
         }, {
             field: "status",
-            title: "Status",
-            width: 50,
+            title: "Trạng thái",
+            width: 75,
             textAlign: 'center',
             // callback function support for column rendering
             template: function(row) {
@@ -227,7 +244,7 @@ export class AccountComponent implements OnInit {
             }
         },{
             field: "Actions",
-            title: "Actions",
+            title: "Sự kiện",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
@@ -246,7 +263,10 @@ export class AccountComponent implements OnInit {
 
     delete(id) {
         this._http.get(this.urlDeleteAccount + id, {
-            headers: { 'Content-Type': 'application/json'}
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
         }).subscribe(
             (data) => {
                 this.chRef.detectChanges();

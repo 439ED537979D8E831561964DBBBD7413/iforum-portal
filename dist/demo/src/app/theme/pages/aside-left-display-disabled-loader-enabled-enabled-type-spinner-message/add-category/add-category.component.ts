@@ -31,7 +31,7 @@ export class AddCategoryComponent implements OnInit {
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
 
         this.datatable = (<any>$('#m_datatable_category')).mDatatable(this.options);
-        this.desc = (<any>$('.summernote')).summernote();
+        // this.desc = (<any>$('.summernote')).summernote();
         // let tag = (<any>$('.tag').select());
     }
 
@@ -49,7 +49,10 @@ export class AddCategoryComponent implements OnInit {
                 'description': (<any>$(this.desc).val())
             };
             this._http.post(this.urlAddCategoryPost, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
                     this.chRef.detectChanges();
@@ -83,7 +86,10 @@ export class AddCategoryComponent implements OnInit {
             source: {
                 read: {
                     url: this.urlGetCategoryPost,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: { 
+                        'Auth-Token': localStorage.getItem('Auth-Token')
+                    }
                 }
             },
             pageSize: 10,
