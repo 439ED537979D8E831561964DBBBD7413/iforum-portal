@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { Helpers } from '../../../../helpers';
 import { FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
@@ -6,6 +6,8 @@ import { CallApiService } from '../../../_services/call-api.service';
 import { HttpClient } from '@angular/common/http';
 // import * as swal from 'sweetalert2';
 declare var $:any
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
@@ -19,9 +21,13 @@ export class AccountComponent implements OnInit {
         private _callApi: CallApiService,
         private _formBuilder: FormBuilder,
         private _http: HttpClient,
-        private chRef: ChangeDetectorRef
-    ) {    
-    }
+        private chRef: ChangeDetectorRef,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
+    ) {
+        this.toastr.setRootViewContainerRef(vRef);
+    } 
 
     ngOnInit() {
         // this.run();
@@ -35,13 +41,15 @@ export class AccountComponent implements OnInit {
         this.datatable = (<any>$('#m_datatable_account')).mDatatable(this.options);
 
         $(document).on('click', '.open_dialog', (event) => {
-            console.log($(event.target).parent().data('element-id'));
-            this.formEdit($(event.target).parent().data('element-id'));
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            console.log(id);
+            this.formEdit(id);
             $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
         $(document).on('click', '.delete', (event) => {
-            this.delete($(event.target).parent().data('element-id'));
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            this.delete(id);
         });
     }
 
@@ -98,7 +106,12 @@ export class AccountComponent implements OnInit {
                 });
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
         
@@ -129,11 +142,17 @@ export class AccountComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    this.toastr.success('Thêm thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         }
@@ -152,14 +171,24 @@ export class AccountComponent implements OnInit {
                 id: this.editForm.get('e_id').value,
             }
             this._http.post(this.urlEditAccount, JSON.stringify(dataS), {
-                headers: { 'Content-Type': 'application/json'}
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
             }).subscribe(
                 (data) => {
+                    
+                    this.toastr.success('Sửa thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        // this.toastr.error(error.error['message'], 'Success!')
+                        // localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         }
@@ -269,11 +298,17 @@ export class AccountComponent implements OnInit {
             }
         }).subscribe(
             (data) => {
+                this.toastr.success('Xóa thành công', 'Success!')
                 this.chRef.detectChanges();
                 this.datatable.reload();
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
     }

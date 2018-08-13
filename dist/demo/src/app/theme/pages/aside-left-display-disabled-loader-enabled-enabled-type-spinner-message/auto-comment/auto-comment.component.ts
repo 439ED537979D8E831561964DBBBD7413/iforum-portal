@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { Helpers } from '../../../../helpers';
 import { CallApiService } from '../../../_services/call-api.service';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 declare var $:any
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-auto-comment',
   templateUrl: './auto-comment.component.html',
@@ -17,9 +19,12 @@ export class AutoCommentComponent implements OnInit {
         private _callApi: CallApiService,
         private _formBuilder: FormBuilder,
         private _http: HttpClient,
-        private chRef: ChangeDetectorRef
+        private chRef: ChangeDetectorRef,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
     ) {
-
+        this.toastr.setRootViewContainerRef(vRef);
     }
     ngOnInit() {
         this.getDataAccount();
@@ -107,11 +112,18 @@ export class AutoCommentComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    
+                    this.toastr.success('Thêm thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         }
@@ -243,6 +255,14 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listcommentCategory = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     };
     getDataAccount() {
@@ -253,6 +273,14 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listAccount = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     };
     getDataTask() {
@@ -263,6 +291,14 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listTask = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     };
 
@@ -280,11 +316,17 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe(
             (data) => {
+                this.toastr.success('Run thành công', 'Success!')
                 this.chRef.detectChanges();
                 this.datatable.reload();
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
     }
@@ -295,11 +337,17 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe(
             (data) => {
+                this.toastr.success('Dừng thành công', 'Success!')
                 this.chRef.detectChanges();
                 this.datatable.reload();
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
     }
@@ -310,11 +358,17 @@ export class AutoCommentComponent implements OnInit {
             }
         }).subscribe(
             (data) => {
+                this.toastr.success('Stop thành công', 'Success!')
                 this.chRef.detectChanges();
                 this.datatable.reload();
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
     }

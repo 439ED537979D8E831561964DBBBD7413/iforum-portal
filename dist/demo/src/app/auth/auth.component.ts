@@ -8,6 +8,7 @@ import { AlertComponent } from './_directives/alert.component';
 import { Helpers } from '../helpers';
 import { HttpClient } from '@angular/common/http';
 import { CallApiService } from '../theme/_services/call-api.service';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 declare let $: any;
 declare let mUtil: any;
@@ -39,7 +40,10 @@ export class AuthComponent implements OnInit {
         private _alertService: AlertService,
         private _http: HttpClient,
         private _callApi: CallApiService,
+        public toastr: ToastsManager,
+        vRef: ViewContainerRef,
         private cfr: ComponentFactoryResolver) {
+            this.toastr.setRootViewContainerRef(vRef);
     }
 
     ngOnInit() {
@@ -80,12 +84,16 @@ export class AuthComponent implements OnInit {
             }).subscribe(
                 (data) => {
                     // console.log(data);
+                    this.toastr.success('Đăng nhập thành công', 'Success!')
                     localStorage.setItem('Auth-Token', data['message']);
+                    this.loading = false;
                     this._router.navigate([this.returnUrl]);
                 },
                 (error) => {
-                    this.showAlert('alertSignin');
-                    this._alertService.error(error);
+                    console.log(error);
+                    // this.showAlert('alertSignin');
+                    this.toastr.error(error.error['message'], 'Oops!')
+                    // this._alertService.error(error);
                     this.loading = false;
                 }
             );

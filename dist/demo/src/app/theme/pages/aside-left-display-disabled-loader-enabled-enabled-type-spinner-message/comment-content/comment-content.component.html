@@ -27,16 +27,17 @@
             </div>
             <div class="form-group m-form__group row">
                 <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleTextarea">Nội dung trả lời</label>
-                    <textarea formControlName="reply" class="form-control m-input m-input--solid reply" id="reply" rows="10" (change)="onChange($event.target.value)"></textarea>
-                    <div *ngIf="!form.get('reply').valid && form.get('reply').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-                </div>
-                <div class="col-lg-6 m-form__group-sub">
                     <label for="exampleTextarea">Nội dung bình luận</label>
                     <textarea formControlName="comment" class="form-control m-input m-input--solid comment" id="comment" rows="10" (change)="onChange($event.target.value)"></textarea>
                     <div *ngIf="!form.get('comment').valid && form.get('comment').touched" id="email-error" class="form-control-feedback">This field is required.</div>
 
                 </div>
+                <div class="col-lg-6 m-form__group-sub">
+                    <label for="exampleTextarea">Nội dung trả lời</label>
+                    <textarea formControlName="reply" class="form-control m-input m-input--solid reply" id="reply" rows="10" (change)="onChange($event.target.value)"></textarea>
+                    <div *ngIf="!form.get('reply').valid && form.get('reply').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+                </div>
+
             </div>
         </div>
         <div class="m-portlet__foot m-portlet__foot--fit">

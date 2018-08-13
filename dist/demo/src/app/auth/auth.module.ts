@@ -14,6 +14,7 @@ import { AuthenticationService } from './_services/authentication.service';
 import { UserService } from './_services/user.service';
 import { fakeBackendProvider } from './_helpers/index';
 import { HttpClientModule } from '@angular/common/http';
+import {ToastModule} from 'ng2-toastr/ng2-toastr';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
         // HttpModule,
         AuthRoutingModule,
         ReactiveFormsModule,
-        HttpClientModule
+        HttpClientModule,
+        ToastModule.forRoot()
     ],
     providers: [
         AuthGuard,

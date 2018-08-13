@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { Helpers } from '../../../../helpers';
 import { CallApiService } from '../../../_services/call-api.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 declare var $:any
-
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-enter-category',
   templateUrl: './enter-category.component.html',
@@ -18,9 +19,12 @@ export class EnterCategoryComponent implements OnInit {
         private _callApi: CallApiService,
         private _formBuilder: FormBuilder,
         private _http: HttpClient,
-        private chRef: ChangeDetectorRef
+        private chRef: ChangeDetectorRef,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
     ) {
-
+        this.toastr.setRootViewContainerRef(vRef);
     }
     ngOnInit() {
         // this.getDataAccount();
@@ -36,15 +40,16 @@ export class EnterCategoryComponent implements OnInit {
   
         this.datatable = (<any>$('#m_datatable_category')).mDatatable(this.options);
         
-        $(document).on('click', '.open_dialoga', (event) => {
-            console.log($(event.target).parent().data('element-id'));
-            this.formEdit($(event.target).parent().data('element-id'));
-            // $('#m_modal').modal();
+        $(document).on('click', '.open_dialog', (event) => {
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            console.log(id);
+            this.formEdit(id);
+            $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.deletea', (event) => {
-            console.log($(event.target).parent().data('element-id'));
-            this.delete($(event.target).parent().data('element-id'));
+        $(document).on('click', '.delete', (event) => {
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            this.delete(id);
         });
     }
     form = this._formBuilder.group({
@@ -91,11 +96,17 @@ export class EnterCategoryComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    this.toastr.success('Thêm thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         }
@@ -113,11 +124,18 @@ export class EnterCategoryComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    
+                    this.toastr.success(data['message'], 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
     }
@@ -139,7 +157,12 @@ export class EnterCategoryComponent implements OnInit {
                 });
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
         
@@ -248,6 +271,14 @@ export class EnterCategoryComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listAccount = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     }
 
@@ -259,6 +290,14 @@ export class EnterCategoryComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listWeb = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     }
 
@@ -270,6 +309,14 @@ export class EnterCategoryComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listCommentCategory = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     }
 
@@ -281,6 +328,14 @@ export class EnterCategoryComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.listCategory = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     }
 }

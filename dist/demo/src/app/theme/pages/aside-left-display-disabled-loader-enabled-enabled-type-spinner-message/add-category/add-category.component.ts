@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { Helpers } from '../../../../helpers';
 import { CallApiService } from '../../../_services/call-api.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-category',
@@ -17,10 +19,13 @@ export class AddCategoryComponent implements OnInit {
         private _callApi: CallApiService,
         private _formBuilder: FormBuilder,
         private _http: HttpClient,
-        private chRef: ChangeDetectorRef
+        private chRef: ChangeDetectorRef,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
     ) {
-        
-    }   
+        this.toastr.setRootViewContainerRef(vRef);
+    } 
     ngOnInit() {
 
     }
@@ -55,12 +60,19 @@ export class AddCategoryComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    
+                    this.toastr.success('Thêm thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                     this.setValueFormNull();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         }

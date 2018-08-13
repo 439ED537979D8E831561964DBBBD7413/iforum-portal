@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewContainerRef } from '@angular/core';
 import { Helpers } from '../../../../helpers';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { CallApiService } from '../../../_services/call-api.service';
-
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: "app-index",
@@ -13,8 +14,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _script: ScriptLoaderService,
-        private _callApi: CallApiService
-    ) {}
+        private _callApi: CallApiService,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
+    ) {
+        this.toastr.setRootViewContainerRef(vRef);
+    }
 
     public urlForum = this._callApi.createUrl('task/all');
     public options = {

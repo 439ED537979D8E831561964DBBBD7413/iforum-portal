@@ -1,10 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { ScriptLoaderService } from '../../../../_services/script-loader.service';
 import { Helpers } from '../../../../helpers';
 import { CallApiService } from '../../../_services/call-api.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // import { Http } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
+
 declare var $:any
 @Component({
   selector: 'app-comment-content',
@@ -18,9 +21,12 @@ export class CommentContentComponent implements OnInit {
         private _callApi: CallApiService,
         private _formBuilder: FormBuilder,
         private _http: HttpClient,
-        private chRef: ChangeDetectorRef
+        private chRef: ChangeDetectorRef,
+        public toastr: ToastsManager,
+        private _router: Router,
+        vRef: ViewContainerRef,
     ) {
-
+        this.toastr.setRootViewContainerRef(vRef);
     }
     ngOnInit() {
     }
@@ -37,15 +43,16 @@ export class CommentContentComponent implements OnInit {
         this.comment = (<any>$('.comment')).summernote();
         this.reply = (<any>$('.reply')).summernote();
 
-        $(document).on('click', '.open_dialoga', (event) => {
-            console.log($(event.target).parent().data('element-id'));
-            this.formEdit($(event.target).parent().data('element-id'));
-            $('#m_modal').modal();
+        $(document).on('click', '.open_dialog', (event) => {
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            console.log(id);
+            this.formEdit(id);
+            // $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.deletea', (event) => {
-            console.log($(event.target).parent().data('element-id'));
-            this.delete($(event.target).parent().data('element-id'));
+        $(document).on('click', '.delete', (event) => {
+            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
+            this.delete(id);
         });
         // let tag = (<any>$('.tag').select());
     }
@@ -61,19 +68,17 @@ export class CommentContentComponent implements OnInit {
     comment: any;
     reply: any;
 
-    e_comment: any;
-    e_reply: any;
-    e_idCategory: any;
-    e_id: any;
+    action = 'add';
 
     form = this._formBuilder.group({
         comment: new FormControl(''),
         reply: new FormControl(''),
         idCategory: new FormControl(''),
-        // idWeb: new FormControl('1'),
+        id: new FormControl('1'),
     });
     
     formEdit(id) {
+        this.action = 'edit';
         this._http.get(this.urlGetCommentById + id, {
             headers: { 
                 'Content-Type': 'application/json',
@@ -82,17 +87,22 @@ export class CommentContentComponent implements OnInit {
         }).subscribe(
             (data) => {
                 console.log(data);
-                // var dataParse = JSON.parse(data);
-                
-                this.e_comment = data['contentComment'];
-                this.e_reply = data['contentReply'];
-                this.e_idCategory = data['idCategory'];
-                this.e_id = data['id'];
-                (<any>$('#e_comment').summernote({dialogsInBody: true}));
-                (<any>$('#e_reply').summernote({dialogsInBody: true}));
+                this.form = this._formBuilder.group({
+                    comment: new FormControl(data['contentComment']),
+                    reply: new FormControl(data['contentReply']),
+                    idCategory: new FormControl(data['idCategory']),
+                    id: new FormControl(data['id']),
+                });
+                $('#comment').summernote('code', data['contentComment']);
+                $('#reply').summernote('code', data['contentReply']);
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
         
@@ -102,7 +112,7 @@ export class CommentContentComponent implements OnInit {
         if (!this.form.valid) {
             return;
         }
-        if (this.form.valid) {
+        if (this.form.valid && this.action === 'add') {
             var dataS= {
                 'contentComment': (<any>$(this.comment).val()),
                 'contentReply': (<any>$(this.reply).val()),
@@ -116,15 +126,23 @@ export class CommentContentComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
-                    console.log(data);
+                    this.toastr.success('Thêm thành công', 'Success!')
                     // this.commentCategory = data;
                     this.chRef.detectChanges();
                     this.datatablea.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
+        }
+        if (this.form.valid && this.action === 'edit') {
+            this.onSubmitEdit();
         }
     }
 
@@ -134,10 +152,10 @@ export class CommentContentComponent implements OnInit {
         // }
         // if (this.editForm.valid) {
             var dataS= {
-                'contentComment': (<any>$(this.e_comment).val()),
-                'contentReply': (<any>$(this.e_reply).val()),
-                'idCategory': this.form.get('e_idCategory').value,
-                'id': this.form.get('e_id').value,
+                'contentComment': (<any>$(this.comment).val()),
+                'contentReply': (<any>$(this.reply).val()),
+                'idCategory': this.form.get('idCategory').value,
+                'id': this.form.get('id').value,
             }
             this._http.post(this.urlEditComment, JSON.stringify(dataS), {
                 headers: { 
@@ -146,14 +164,21 @@ export class CommentContentComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
+                    this.toastr.success('Sửa thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatablea.reload();
                 },
                 (error) => {
-                    console.log(error);
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Success!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
         // }
+        this.action = 'add';
     }
 
     onChange(value) {
@@ -225,10 +250,10 @@ export class CommentContentComponent implements OnInit {
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialoga m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialog m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="deletea m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;
@@ -249,11 +274,18 @@ export class CommentContentComponent implements OnInit {
             }
         }).subscribe(
             (data) => {
+                
+                this.toastr.success('Xóa thành công', 'Success!')
                 this.chRef.detectChanges();
                 this.datatablea.reload();
             },
             (error) => {
-                console.log(error);
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
             }
         );
     }
@@ -266,6 +298,14 @@ export class CommentContentComponent implements OnInit {
             }
         }).subscribe((data) => {
             this.commentCategory = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
         })
     }
   
