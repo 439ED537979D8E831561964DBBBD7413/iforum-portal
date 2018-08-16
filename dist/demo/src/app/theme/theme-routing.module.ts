@@ -40,6 +40,11 @@ const routes: Routes = [
                 "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/auto-comment\/auto-comment.module#AutoCommentModule"
             },
             {
+                "path": "autocategory",
+                "canActivate": [AuthGuard],
+                "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/auto-category\/auto-category.module#AutoCategoryModule"
+            },
+            {
                 "path": "commentcategory",
                 "canActivate": [AuthGuard],
                 "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/comment-category\/comment-category.module#CommentCategoryModule"
@@ -48,6 +53,16 @@ const routes: Routes = [
                 "path": "commentcontent",
                 "canActivate": [AuthGuard],
                 "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/comment-content\/comment-content.module#CommentContentModule"
+            },
+            {
+                "path": "website",
+                "canActivate": [AuthGuard],
+                "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/website\/website.module#WebsiteModule"
+            },
+            {
+                "path": "webcategory",
+                "canActivate": [AuthGuard],
+                "loadChildren": ".\/pages\/aside-left-display-disabled-loader-enabled-enabled-type-spinner-message\/web-category\/web-category.module#WebCategoryModule"
             },
             {
                 "path": "404",

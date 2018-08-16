@@ -4,15 +4,15 @@ import { Helpers } from '../../../../helpers';
 import { CallApiService } from '../../../_services/call-api.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+declare var $:any
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
-
 @Component({
-  selector: 'app-add-category',
-  templateUrl: './add-category.component.html',
+  selector: 'app-web-category',
+  templateUrl: './web-category.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AddCategoryComponent implements OnInit {
+export class WebCategoryComponent implements OnInit {
 
     constructor(
         private _script: ScriptLoaderService,
@@ -25,92 +25,75 @@ export class AddCategoryComponent implements OnInit {
         vRef: ViewContainerRef,
     ) {
         this.toastr.setRootViewContainerRef(vRef);
-    } 
+    }
     ngOnInit() {
-
+        // this.getDataAccount();
+        // this.getDataCategory();
+        // this.getDataCommentCategory();
+        this.getDataWebCategory();
     }
     ngAfterViewInit() {
         this._script.loadScripts('app-index',
             ['assets/app/js/dashboard.js']);
-
+  
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
-
-        this.datatable = (<any>$('#m_datatable_accc')).mDatatable(this.options);
-        this.desc =  (<any>$('.summernote'))
-        $(document).on('click', '.open_dialogb', (event) => {
+  
+        this.datatable = (<any>$('#m_datatable_wc')).mDatatable(this.options);
+        
+        $(document).on('click', '.open_dialog', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
-            this.formEdit(id);
+            
+            this.getDataWebCategory();
+            setTimeout(this.formEdit(id), 100);
             // $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.deleteb', (event) => {
+        $(document).on('click', '.delete', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.delete(id);
         });
     }
-
     form = this._formBuilder.group({
-        name: new FormControl('', Validators.required),
+        url: new FormControl('', Validators.required),
+        name: new FormControl('',Validators.required),
+        // accountPost: new FormControl('', Validators.required),
+        // commentCategory: new FormControl('',Validators.required),
+        idWeb: new FormControl('1'),
     });
 
+    urlGetWebCategory = this._callApi.createUrl('webcategory/website/1');
+    urlGetWebCategoryById = this._callApi.createUrl('webcategory/id/');
+    urlAddWebCategory = this._callApi.createUrl('webcategory/add');
+    urlEditWebCategory = this._callApi.createUrl('webcategory/edit');
+    urlDeleteWebCategory = this._callApi.createUrl('webcategory/delete/');
+
     action = 'add';
-    reset(){
+    reset() {
         this.action = 'add';
         this.form = this._formBuilder.group({
-            name: new FormControl('', Validators.required),
+            url: new FormControl('', Validators.required),
+            name: new FormControl('',Validators.required),
+            // accountPost: new FormControl('', Validators.required),
+            // commentCategory: new FormControl('',Validators.required),
+            idWeb: new FormControl('1'),
         });
     }
-    formEdit(id) {
-        this.action = 'edit';
-        this._http.get(this.urlGetCategoryPostById + id, {
-            headers: { 
-                'Content-Type': 'application/json',
-                'Auth-Token': localStorage.getItem('Auth-Token')
-            }
-        }).subscribe(
-            (data) => {
-                console.log(data);
-                this.form = this._formBuilder.group({
-                    name: new FormControl(data['name']),
-                    id: new FormControl(data['id']),
-                });
-                (<any>$(this.desc).val(data['description']))
-            },
-            (error) => {
-                if (error.status == 403) {
-                    this.toastr.error(error.error['message'], 'Success!')
-                    localStorage.removeItem('Auth-Token');
-                    this._router.navigate(['/logout']);
-                }
-                this.toastr.error(error.error['message'], 'Oops!')
-            }
-        );
-        
-    }
-
     onSubmit() {
         if (!this.form.valid) {
             return;
         }
         if (this.form.valid && this.action === 'add') {
-            var dataS = {
-                'name': this.form.get('name').value,
-                'description': (<any>$(this.desc).val())
-            };
-            this._http.post(this.urlAddCategoryPost, JSON.stringify(dataS), {
+            this._http.post(this.urlAddWebCategory, JSON.stringify(this.form.value), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
                 }
             }).subscribe(
                 (data) => {
-                    
                     this.toastr.success('Thêm thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
-                    this.setValueFormNull();
-                    this.reset();
                 },
                 (error) => {
                     if (error.status == 403) {
@@ -126,28 +109,24 @@ export class AddCategoryComponent implements OnInit {
             this.onSubmitEdit();
         }
     }
-
     onSubmitEdit() {
-        // if (!this.editForm.valid) {
-        //     return;
-        // }
-        // if (this.editForm.valid) {
             var dataS= {
-                'description': (<any>$(this.desc).val()),
-                'name': this.form.get('name').value,
                 'id': this.form.get('id').value,
+                'url': this.form.get('url').value,
+                'name': this.form.get('name').value,
+                'idWeb': this.form.get('idWeb').value,
             }
-            this._http.post(this.urlEditCategoryPost, JSON.stringify(dataS), {
+            this._http.post(this.urlEditWebCategory, JSON.stringify(dataS), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
                 }
             }).subscribe(
                 (data) => {
-                    this.toastr.success('Sửa thành công', 'Success!')
+                    
+                    this.toastr.success(data['message'], 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
-                    this.setValueFormNull();
                     this.action = 'add';
                 },
                 (error) => {
@@ -159,31 +138,75 @@ export class AddCategoryComponent implements OnInit {
                     this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
-        // }
+            this.form = this._formBuilder.group({
+                url: new FormControl('', Validators.required),
+                name: new FormControl('', Validators.required),
+                idWeb: new FormControl(1),
+            });
     }
 
-    setValueFormNull() {
+    webc: any;
+    formEdit(id) {
+        this.action = 'edit';
+        this.webc = '';
+        for (var i = 0; i<this.listWebCategory.length; i++) {
+            if (this.listWebCategory[i].id === id){
+                this.webc = this.listWebCategory[i];
+            }
+        }
+        if (this.webc != '') {
+            this.form = this._formBuilder.group({
+                id: new FormControl(this.webc.id),
+                url: new FormControl(this.webc.url, Validators.required),
+                name: new FormControl(this.webc.name, Validators.required),
+                idWeb: new FormControl('1'),
+            });
+        } else {
+            this.toastr.error("Chuyên mục không tồn tại", 'Oops!')
+        }
+        
+        // this._http.get(this.urlGetWebCategoryById + id, {
+        //     headers: { 
+        //         'Content-Type': 'application/json',
+        //         'Auth-Token': localStorage.getItem('Auth-Token')
+        //     }
+        // }).subscribe(
+        //     (data) => {
+        //         console.log(data);
+        //         // var dataParse = JSON.parse(data);
+        //         this.form = this._formBuilder.group({
+        //             url: new FormControl(data['url'], Validators.required),
+        //             name: new FormControl(data['name'], Validators.required),
+        //             idWeb: new FormControl(1, Validators.required),
+        //         });
+        //     },
+        //     (error) => {
+        //         if (error.status == 403) {
+        //             this.toastr.error(error.error['message'], 'Success!')
+        //             localStorage.removeItem('Auth-Token');
+        //             this._router.navigate(['/logout']);
+        //         }
+        //         this.toastr.error(error.error['message'], 'Oops!')
+        //     }
+        // );
+        
+    }
+
+    onChange(value) {
+        // this.idCactegory = 1;
         this.chRef.detectChanges();
-        this.form.setValue({
-            'name': ''
-        });
-        (<any>$(this.desc).val(''))
+        
+        this.datatable.reload();
     }
-
-    urlGetCategoryPost = this._callApi.createUrl('postcategory/all');
-    urlGetCategoryPostById = this._callApi.createUrl('postcategory/id/');
-    urlAddCategoryPost = this._callApi.createUrl('postcategory/add');
-    urlEditCategoryPost = this._callApi.createUrl('postcategory/edit');
-    urlDeleteCategoryPost = this._callApi.createUrl('postcategory/delete/');
-    
-    datatable: any;
-    desc: any;
+    //datatables
+    public datatable: any;
+    // linkPosCategory = this.urlGetLinkPost;
     public options = {
         data: {
             type: 'remote',
             source: {
                 read: {
-                    url: this.urlGetCategoryPost,
+                    url: this.urlGetWebCategory,
                     method: 'GET',
                     headers: { 
                         'Auth-Token': localStorage.getItem('Auth-Token')
@@ -224,13 +247,13 @@ export class AddCategoryComponent implements OnInit {
             },
             textAlign: 'center'
         }, {
-            field: "name",
-            title: "Loại",
+            field: "url",
+            title: "Link",
             sortable: 'asc',
             filterable: false,
         }, {
-            field: "description",
-            title: "Mô tả",
+            field: "name",
+            title: "Tên",
         },{
             field: "Actions",
             title: "Sự kiện",
@@ -239,10 +262,10 @@ export class AddCategoryComponent implements OnInit {
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" class="open_dialogb m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialog m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" class="deleteb m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;
@@ -250,13 +273,9 @@ export class AddCategoryComponent implements OnInit {
         }
         ]
     }
-
-    edit(id) {
-
-    }
-
+    
     delete(id) {
-        this._http.get(this.urlDeleteCategoryPost + id, {
+        this._http.get(this.urlDeleteWebCategory + id, {
             headers: { 
                 'Content-Type': 'application/json',
                 'Auth-Token': localStorage.getItem('Auth-Token')
@@ -278,5 +297,24 @@ export class AddCategoryComponent implements OnInit {
             }
         );
     }
-  
+
+    listWebCategory: any;
+    getDataWebCategory() {
+        this._http.get(this.urlGetWebCategory, {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
+        }).subscribe((data) => {
+            this.listWebCategory = data;
+        },
+        (error) => {
+            if (error.status == 403) {
+                this.toastr.error(error.error['message'], 'Success!')
+                localStorage.removeItem('Auth-Token');
+                this._router.navigate(['/logout']);
+            }
+            this.toastr.error(error.error['message'], 'Oops!')
+        })
+    };
 }

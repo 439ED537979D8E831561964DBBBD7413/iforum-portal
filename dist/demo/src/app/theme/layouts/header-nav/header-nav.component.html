@@ -167,6 +167,14 @@
                                             <a routerLink="/index" class="m-menu__link">
                                                 <i class="m-menu__link-icon flaticon-graphic-2"></i>
                                                 <span class="m-menu__link-text">
+													Forum
+												</span>
+                                            </a>
+                                        </li>
+                                        <li class="m-menu__item" routerLinkActive="m-menu__item--active" routerLinkActiveOptions="{ exact: true }" m-menu-link-redirect="1" aria-haspopup="true">
+                                            <a routerLink="/website" class="m-menu__link">
+                                                <i class="m-menu__link-icon flaticon-graphic-2"></i>
+                                                <span class="m-menu__link-text">
 													Website
 												</span>
                                             </a>
@@ -175,7 +183,7 @@
                                 </div>
                             </li>
                             <li class="m-menu__item  m-menu__item--submenu m-menu__item--tabs" routerLinkActive="m-menu__item--active-tab" routerLinkActiveOptions="{ exact: true }" m-menu-submenu-toggle="tab" aria-haspopup="true">
-                                <a href="javascript:;" class="m-menu__link m-menu__toggle">
+                                <a routerLink="/post" class="m-menu__link m-menu__toggle">
                                     <span class="m-menu__link-text">
 										Đăng tin tổng hợp
 									</span>
@@ -209,11 +217,12 @@
 												</span>
                                             </a>
                                         </li>
+
                                     </ul>
                                 </div>
                             </li>
                             <li class="m-menu__item  m-menu__item--submenu m-menu__item--tabs" routerLinkActive="m-menu__item--active-tab" routerLinkActiveOptions="{ exact: true }" m-menu-submenu-toggle="tab" aria-haspopup="true">
-                                <a href="javascript:;" class="m-menu__link m-menu__toggle">
+                                <a routerLink="/account" class="m-menu__link m-menu__toggle">
                                     <span class="m-menu__link-text">
 										Webtretho
 									</span>
@@ -239,11 +248,27 @@
 												</span>
                                             </a>
                                         </li>
+                                        <li class="m-menu__item" routerLinkActive="m-menu__item--active" routerLinkActiveOptions="{ exact: true }" m-menu-link-redirect="1" aria-haspopup="true">
+                                            <a routerLink="/autocategory" class="m-menu__link">
+                                                <i class="m-menu__link-icon flaticon-analytics"></i>
+                                                <span class="m-menu__link-text">
+													Tự động chuyên mục
+												</span>
+                                            </a>
+                                        </li>
+                                        <li class="m-menu__item" routerLinkActive="m-menu__item--active" routerLinkActiveOptions="{ exact: true }" m-menu-link-redirect="1" aria-haspopup="true">
+                                            <a routerLink="/webcategory" class="m-menu__link">
+                                                <i class="m-menu__link-icon flaticon-notes"></i>
+                                                <span class="m-menu__link-text">
+                                                           Chuyên mục web riêng
+                                                        </span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="m-menu__item  m-menu__item--submenu m-menu__item--tabs" routerLinkActive="m-menu__item--active-tab" routerLinkActiveOptions="{ exact: true }" m-menu-submenu-toggle="tab" aria-haspopup="true">
-                                <a href="javascript:;" class="m-menu__link m-menu__toggle">
+                                <a routerLink="/commentcontent" class="m-menu__link m-menu__toggle">
                                     <span class="m-menu__link-text">
 										Nội dung bình luận
 									</span>

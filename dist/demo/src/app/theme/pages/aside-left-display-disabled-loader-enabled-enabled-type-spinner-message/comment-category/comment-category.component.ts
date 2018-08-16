@@ -35,16 +35,16 @@ export class CommentCategoryComponent implements OnInit {
 
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
 
-        this.datatable = (<any>$('#m_datatable_category')).mDatatable(this.options);
+        this.datatable = (<any>$('#m_datatable_ccate')).mDatatable(this.options);
         // let tag = (<any>$('.tag').select());
-        $(document).on('click', '.open_dialog', (event) => {
+        $(document).on('click', '.open_dialogc', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
             this.formEdit(id);
             $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.delete', (event) => {
+        $(document).on('click', '.deletec', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.delete(id);
         });
@@ -213,10 +213,10 @@ export class CommentCategoryComponent implements OnInit {
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialog m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialogc m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="deletec m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;

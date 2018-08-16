@@ -40,16 +40,16 @@ export class AccountComponent implements OnInit {
 
         this.datatable = (<any>$('#m_datatable_account')).mDatatable(this.options);
 
-        $(document).on('click', '.open_dialog', (event) => {
+        $(document).on('click', '.open_dialogacc', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
             this.formEdit(id);
             $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.delete', (event) => {
+        $(document).on('click', '.deleteacc', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
-            this.delete(id);
+            this.deletea(id);
         });
     }
 
@@ -62,10 +62,7 @@ export class AccountComponent implements OnInit {
     //form
     form = this._formBuilder.group({
         username: new FormControl('', Validators.required),
-        email: new FormControl('', Validators.compose([
-            Validators.required,
-            Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-        ])),
+        email: new FormControl(''),
         password: new FormControl('', Validators.required),
         status: new FormControl(''),
         idWeb: new FormControl('1'),
@@ -73,10 +70,7 @@ export class AccountComponent implements OnInit {
 
     editForm = this._formBuilder.group({
         e_username: new FormControl('', Validators.required),
-        e_email: new FormControl('', Validators.compose([
-            Validators.required,
-            Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-        ])),
+        e_email: new FormControl(''),
         e_password: new FormControl('', Validators.required),
         e_status: new FormControl(''),
         e_idWeb: new FormControl('1'),
@@ -95,10 +89,7 @@ export class AccountComponent implements OnInit {
                 // var dataParse = JSON.parse(data);
                 this.editForm = this._formBuilder.group({
                     e_username: new FormControl(data['username'], Validators.required),
-                    e_email: new FormControl(data['email'], Validators.compose([
-                        Validators.required,
-                        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-                    ])),
+                    e_email: new FormControl(data['email']),
                     e_password: new FormControl(data['password'], Validators.required),
                     e_status: new FormControl(data['status']),
                     e_idWeb: new FormControl(data['idWeb']),
@@ -279,10 +270,10 @@ export class AccountComponent implements OnInit {
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialog m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" class="open_dialogacc m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" class="deleteacc m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;
@@ -290,7 +281,7 @@ export class AccountComponent implements OnInit {
         }]
     };
 
-    delete(id) {
+    deletea(id) {
         this._http.get(this.urlDeleteAccount + id, {
             headers: { 
                 'Content-Type': 'application/json',
@@ -309,6 +300,8 @@ export class AccountComponent implements OnInit {
                     this._router.navigate(['/logout']);
                 }
                 this.toastr.error(error.error['message'], 'Oops!')
+                this.chRef.detectChanges();
+                this.datatable.reload();
             }
         );
     }

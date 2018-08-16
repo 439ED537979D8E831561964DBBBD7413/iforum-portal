@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
         <div class="mr-auto">
             <h3 class="m-subheader__title m-subheader__title--separator">
-                Tự động bình luận
+                Tự động chuyên mục
             </h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
@@ -19,25 +19,27 @@
 <div class="m-content">
     <form [formGroup]="form" (submit)="onSubmit()" class="m-form m-form--fit m-form--label-align-right">
         <div class="m-portlet__body">
-            <div class="form-group m-form__group" [class.has-danger]="!form.get('urlPost').valid && form.get('urlPost').touched">
-                <label for="exampleInputEmail1">Link đăng tin:</label>
-                <input formControlName="urlPost" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="exampleInputEmail1" placeholder="Title" type="text">
-                <div *ngIf="!form.get('urlPost').valid && form.get('urlPost').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-            </div>
             <div class="form-group m-form__group row">
+                <!-- <div class="col-lg-4 m-form__group-sub" [class.has-danger]="!form.get('idWeb').valid && form.get('idWeb').touched">
+                    <label for="exampleSelect1">Website</label>
+                    <select formControlName="idWeb" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
+                                <option *ngFor="let acc of listWeb" value="{{ acc.id }}">{{ acc.name }}</option>
+                            </select>
+                    <div *ngIf="!form.get('idWeb').valid && form.get('idWeb').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+                </div> -->
+                <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('idWebCategory').valid && form.get('idWebCategory').touched">
+                    <label for="exampleSelect1">Chuyên mục Website</label>
+                    <select formControlName="idWebCategory" class="form-control m-input m-input--solid" id="exampleSelect1">
+                            <option *ngFor="let acc of listWebCategory" value="{{ acc.id }}">{{ acc.name }}</option>
+                        </select>
+                    <div *ngIf="!form.get('idWebCategory').valid && form.get('idWebCategory').touched" id="email-error" class="form-control-feedback">This field is required.</div>
+                </div>
                 <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('idCommentCategory').valid && form.get('idCommentCategory').touched">
                     <label for="exampleSelect1">Nội dung bình luận</label>
                     <select formControlName="idCommentCategory" class="form-control m-input m-input--solid" id="exampleSelect1">
                         <option *ngFor="let acc of listcommentCategory" value="{{ acc.id }}">{{ acc.name }}</option>
                     </select>
                     <div *ngIf="!form.get('idCommentCategory').valid && form.get('idCommentCategory').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-                </div>
-                <div class="col-lg-6 m-form__group-sub" [class.has-danger]="!form.get('idAccount').valid && form.get('idAccount').touched">
-                    <label for="exampleSelect1">Tài khoản đăng bài</label>
-                    <select formControlName="idAccount" class="form-control m-input m-input--solid" id="exampleSelect1">
-                        <option *ngFor="let acc of listAccount" value="{{ acc.id }}">{{ acc.username }}</option>
-                    </select>
-                    <div *ngIf="!form.get('idAccount').valid && form.get('idAccount').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
             </div>
             <div class="form-group m-form__group row">
@@ -61,11 +63,6 @@
                     <input formControlName="time4" aria-describedby="emailHelp" class="form-control m-input m-input--solid" type="text">
                     <div *ngIf="!form.get('time4').valid && form.get('time4').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
-                <div class="col-lg-3 m-form__group-sub" [class.has-danger]="!form.get('viewCount').valid && form.get('viewCount').touched">
-                    <label for="exampleSelect1">Lượng view:</label>
-                    <input formControlName="viewCount" aria-describedby="emailHelp" class="form-control m-input m-input--solid" type="text">
-                    <div *ngIf="!form.get('viewCount').valid && form.get('viewCount').touched" id="email-error" class="form-control-feedback">This field is required.</div>
-                </div>
             </div>
         </div>
         <div class="m-portlet__foot m-portlet__foot--fit">
@@ -80,7 +77,7 @@
         </div>
     </form>
 
-    <div class="m_datatable" id="m_datatable_auto">
+    <div class="m_datatable" id="m_datatable_autoc">
 
     </div>
 </div>

@@ -39,25 +39,25 @@ export class CommentContentComponent implements OnInit {
         
         this.getDataCommentCategory();
         
-        this.datatablea = (<any>$('#m_datatable_category')).mDatatable(this.options);
+        this.datatablea = (<any>$('#m_datatable_cc')).mDatatable(this.options);
         this.comment = (<any>$('.comment')).summernote();
         this.reply = (<any>$('.reply')).summernote();
 
-        $(document).on('click', '.open_dialog', (event) => {
+        $(document).on('click', '.open_dialogd', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
             this.formEdit(id);
             // $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.delete', (event) => {
+        $(document).on('click', '.deleted', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.delete(id);
         });
         // let tag = (<any>$('.tag').select());
     }
 
-    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
+    urlGetCommentCategory = this._callApi.createUrl('comment/all');
     urlGetComment = this._callApi.createUrl('comment/category/');
     urlAddComment = this._callApi.createUrl('comment/add');
     urlEditComment = this._callApi.createUrl('comment/edit');
@@ -167,6 +167,7 @@ export class CommentContentComponent implements OnInit {
                     this.toastr.success('Sửa thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatablea.reload();
+                    this.action = 'add';
                 },
                 (error) => {
                     if (error.status == 403) {
@@ -178,7 +179,6 @@ export class CommentContentComponent implements OnInit {
                 }
             );
         // }
-        this.action = 'add';
     }
 
     onChange(value) {
@@ -250,10 +250,10 @@ export class CommentContentComponent implements OnInit {
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialog m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" class="open_dialogd m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" class="deleted m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;

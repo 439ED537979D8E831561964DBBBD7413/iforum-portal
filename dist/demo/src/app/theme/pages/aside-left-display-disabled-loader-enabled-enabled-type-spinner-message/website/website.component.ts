@@ -6,11 +6,11 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-    selector: "app-index",
-    templateUrl: "./index.component.html",
+    selector: "app-website",
+    templateUrl: "./website.component.html",
     encapsulation: ViewEncapsulation.None,
 })
-export class IndexComponent implements OnInit, AfterViewInit {
+export class WebsiteComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _script: ScriptLoaderService,
@@ -22,7 +22,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.toastr.setRootViewContainerRef(vRef);
     }
 
-    public urlForum = this._callApi.createUrl('task/all');
+    public urlForum = this._callApi.createUrl('website/all');
     public options = {
         data: {
             type: 'remote',
@@ -76,53 +76,15 @@ export class IndexComponent implements OnInit, AfterViewInit {
             },
             textAlign: 'center'
         }, {
-            field: "url",
-            title: "Link",
+            field: "name",
+            title: "Name",
             sortable: 'asc',
             filterable: false,
         }, {
-            field: "title",
-            title: "Web",
-            template: function(row, index, datatable) {
-                var matches = row.url.match('^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)');
-                var domain = matches && matches[1];
-                console.log(domain)
-                return domain;
-            }
-        },{
-            field: "comment_last",
-            title: "Bình luận cuối",
-            template: function(row, index, datatable) {
-                var ct = row.commentTasks[0];
-                if (!ct) {
-                    return '';
-                }
-                if (ct.status != 2) {
-                    return ct.comment.contentComment;
-                }
-                if (ct.accountComment === null || ct.accountComment === undefined) {
-                    return ct.description;
-                }
-                return ct.accountComment.username +' - '+ ct.description;
-            }
-        },{
-            field: "replyt_last",
-            title: "Trả lời cuối",
-            sortable: false,
-            template: function(row, index, datatable) {
-                var ct = row.commentTasks[0];
-                if (!ct) {
-                    return '';
-                }
-                if (ct.status === 1) {
-                    return ct.comment.contentReply;
-                }
-                if (ct.status === 2) {
-                    return '';
-                }
-                return ct.description;
-            }
-        },
+            field: "url",
+            title: "Url",
+            sortable: 'asc',
+        }
     ]
     }
 
@@ -136,7 +98,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
 
-        let datatable = (<any>$('#m_datatable_forum')).mDatatable(this.options);
+        let datatable = (<any>$('#m_datatable_w')).mDatatable(this.options);
         // (<any>$.ajax({
         //     url: this.urlForum,
         //     context: document.body

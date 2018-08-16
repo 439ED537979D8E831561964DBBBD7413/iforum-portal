@@ -8,11 +8,11 @@ declare var $:any
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 @Component({
-  selector: 'app-auto-comment',
-  templateUrl: './auto-comment.component.html',
+  selector: 'app-auto-category',
+  templateUrl: './auto-category.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AutoCommentComponent implements OnInit {
+export class AutoCategoryComponent implements OnInit {
 
     constructor(
         private _script: ScriptLoaderService,
@@ -27,9 +27,10 @@ export class AutoCommentComponent implements OnInit {
         this.toastr.setRootViewContainerRef(vRef);
     }
     ngOnInit() {
-        this.getDataAccount();
+        // this.getDataWebCategory();
+        this.getDataWebCategory(1);
         this.getDataCommentCategory();
-        this.getDataTask();
+        this.getDataWeb();
         this.run();
     }
     ngAfterViewInit() {
@@ -38,27 +39,23 @@ export class AutoCommentComponent implements OnInit {
   
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
   
-        this.datatable = (<any>$('#m_datatable_auto')).mDatatable(this.options);
-        $(document).on('click', '.open_dialogaa', (event) => {
+        this.datatable = (<any>$('#m_datatable_autoc')).mDatatable(this.options);
+        $(document).on('click', '.open_dialogaab', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
             this.formEdit(id);
             // $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.deleteaa', (event) => {
+        $(document).on('click', '.deleteaab', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.delete(id);
         });
-        $(document).on('click', '.playa', (event) => {
+        $(document).on('click', '.playab', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.play(id);
         });
-        $(document).on('click', '.pausea', (event) => {
-            var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
-            this.pause(id);
-        });
-        $(document).on('click', '.stopa', (event) => {
+        $(document).on('click', '.stopab', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.stop(id);
         });
@@ -72,39 +69,59 @@ export class AutoCommentComponent implements OnInit {
     }
 
     form = this._formBuilder.group({
-        urlPost: new FormControl('', Validators.required),
         idCommentCategory: new FormControl(''),
-        time1: new FormControl(''),
-        time2: new FormControl(''),
-        time3: new FormControl(''),
-        time4: new FormControl(''),
-        viewCount: new FormControl(''),
-        idAccount: new FormControl(''),
-        idWeb: new FormControl('1'),
+        time1: new FormControl('', Validators.required),
+        time2: new FormControl('', Validators.required),
+        time3: new FormControl('', Validators.required),
+        time4: new FormControl('', Validators.required),
+        idWebCategory: new FormControl(''),
+        idWeb: new FormControl(''),
     });
-    count = new FormControl(0);
-    urlAddAccount = this._callApi.createUrl('account/add');
-    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
-    urlGetAccount = this._callApi.createUrl('account/website/1');
 
-    urlGetTask = this._callApi.createUrl('task/all');
-    urlGetTaskById = this._callApi.createUrl('task/id/');
-    urlEditTask = this._callApi.createUrl('task/edit');
-    urlAddTask = this._callApi.createUrl('task/add');
-    urlDeleteTask = this._callApi.createUrl('task/delete/');
-    urlStopTask = this._callApi.createUrl('task/stop/');
-    urlResumeTask = this._callApi.createUrl('task/run/');
-    urlPauseTask = this._callApi.createUrl('task/pause/');
+    setForm() {
+        this.form = this._formBuilder.group({
+            idCommentCategory: new FormControl(''),
+            time1: new FormControl('', Validators.required),
+            time2: new FormControl('', Validators.required),
+            time3: new FormControl('', Validators.required),
+            time4: new FormControl('', Validators.required),
+            idWebCategory: new FormControl(''),
+            idWeb: new FormControl(''),
+        });
+    }
+    reset(){
+        this.action = 'add';
+        this.form = this._formBuilder.group({
+            idCommentCategory: new FormControl(''),
+            time1: new FormControl('', Validators.required),
+            time2: new FormControl('', Validators.required),
+            time3: new FormControl('', Validators.required),
+            time4: new FormControl('', Validators.required),
+            idWebCategory: new FormControl(''),
+            idWeb: new FormControl(''),
+        });
+    }
+    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
+    urlGetWebCategory = this._callApi.createUrl('webcategory/website/');
+    urlGetWeb = this._callApi.createUrl('website/all');
+
+    urlGetTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/website/1');
+    urlGetTaskByIdAutoCactegory = this._callApi.createUrl('taskwebcategory/id/');
+    urlEditTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/edit');
+    urlAddTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/add');
+    urlDeleteTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/delete/');
+    urlStopTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/stop/');
+    urlResumeTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/run/');
 
     listcommentCategory: any;
-    listAccount: any;
-    listTask: any;
+    listWebCategory: any;
+    listWeb: any;
 
     action = 'add';
 
     formEdit(id) {
         this.action = 'edit';
-        this._http.get(this.urlGetTaskById + id, {
+        this._http.get(this.urlGetTaskByIdAutoCactegory + id, {
             headers: { 
                 'Content-Type': 'application/json',
                 'Auth-Token': localStorage.getItem('Auth-Token')
@@ -113,14 +130,12 @@ export class AutoCommentComponent implements OnInit {
             (data) => {
                 console.log(data);
                 this.form = this._formBuilder.group({
-                    urlPost: new FormControl(data['url'], Validators.required),
-                    idCommentCategory: new FormControl(data['idCommentCategory']),
-                    time1: new FormControl(''),
-                    time2: new FormControl(''),
-                    time3: new FormControl(''),
-                    time4: new FormControl(''),
-                    viewCount: new FormControl(data['viewCount']),
-                    idAccount: new FormControl(data['idAccount']),
+                    idCommentCategory: new FormControl(''),
+                    time1: new FormControl(data['timeSleep'][0], Validators.required),
+                    time2: new FormControl(data['timeSleep'][1], Validators.required),
+                    time3: new FormControl(data['timeSleep'][2], Validators.required),
+                    time4: new FormControl(data['timeSleep'][3], Validators.required),
+                    idWebCategory: new FormControl(data['webCategory']['id']),
                     idWeb: new FormControl(data['idWeb']),
                     id: new FormControl(data['id']),
                 });
@@ -145,18 +160,16 @@ export class AutoCommentComponent implements OnInit {
             var dataS = {
                 'id': 0,
                 'idWeb': 1,
-                'idAccountPost': this.form.get('idAccount').value,
                 'idCommentCategory': this.form.get('idCommentCategory').value,
-                'url': this.form.get('urlPost').value,
+                'idWebCategory': this.form.get('idWebCategory').value,
                 'timeSleep': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
                     this.form.get('time4').value
-                ],
-                'viewCount': this.form.get('viewCount').value || 0
+                ]
             }
-            this._http.post(this.urlAddTask, JSON.stringify(dataS), {
+            this._http.post(this.urlAddTaskAutoCactegory, JSON.stringify(dataS), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
@@ -190,18 +203,16 @@ export class AutoCommentComponent implements OnInit {
             var dataS = {
                 'id': this.form.get('id').value,
                 'idWeb': this.form.get('idWeb').value,
-                'idAccountPost': this.form.get('idAccount').value,
                 'idCommentCategory': this.form.get('idCommentCategory').value,
-                'url': this.form.get('urlPost').value,
+                'idWebCategory': this.form.get('idWebCategory').value,
                 'timeSleep': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
                     this.form.get('time4').value
-                ],
-                'viewCount': this.form.get('viewCount').value || 0
+                ]
             }
-            this._http.post(this.urlEditTask, JSON.stringify(dataS), {
+            this._http.post(this.urlEditTaskAutoCactegory, JSON.stringify(dataS), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
@@ -213,6 +224,15 @@ export class AutoCommentComponent implements OnInit {
                     this.datatable.reload();
                     this.setValueFormNull();
                     this.action = 'add';
+                    this.form = this._formBuilder.group({
+                        idCommentCategory: new FormControl(''),
+                        time1: new FormControl('', Validators.required),
+                        time2: new FormControl('', Validators.required),
+                        time3: new FormControl('', Validators.required),
+                        time4: new FormControl('', Validators.required),
+                        idWebCategory: new FormControl(''),
+                        idWeb: new FormControl(''),
+                    });
                 },
                 (error) => {
                     if (error.status == 403) {
@@ -223,35 +243,19 @@ export class AutoCommentComponent implements OnInit {
                     this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
-            
         // }
     }
-    reset(){
-        this.action = 'add';
-        this.form = this._formBuilder.group({
-            urlPost: new FormControl('', Validators.required),
-            idCommentCategory: new FormControl(''),
-            time1: new FormControl(''),
-            time2: new FormControl(''),
-            time3: new FormControl(''),
-            time4: new FormControl(''),
-            viewCount: new FormControl(''),
-            idAccount: new FormControl(''),
-            idWeb: new FormControl('1'),
-        });
-    }
+
     setValueFormNull() {
         this.chRef.detectChanges();
         this.form = this._formBuilder.group({
-            urlPost: new FormControl('', Validators.required),
             idCommentCategory: new FormControl(''),
-            time1: new FormControl(''),
-            time2: new FormControl(''),
-            time3: new FormControl(''),
-            time4: new FormControl(''),
-            viewCount: new FormControl(''),
-            idAccount: new FormControl(''),
-            idWeb: new FormControl('1'),
+            time1: new FormControl('', Validators.required),
+            time2: new FormControl('', Validators.required),
+            time3: new FormControl('', Validators.required),
+            time4: new FormControl('', Validators.required),
+            idWebCategory: new FormControl(''),
+            idWeb: new FormControl(''),
         });
     }
     //datatables
@@ -263,7 +267,7 @@ export class AutoCommentComponent implements OnInit {
             type: 'remote',
             source: {
                 read: {
-                    url: this.urlGetTask,
+                    url: this.urlGetTaskAutoCactegory,
                     method: 'GET',
                     headers: { 
                         'Auth-Token': localStorage.getItem('Auth-Token')
@@ -295,7 +299,7 @@ export class AutoCommentComponent implements OnInit {
         pagination: true,
 
         columns: [{
-            field: "STT",
+            field: "id",
             title: "#",
             sortable: false,
             width: 40,
@@ -304,49 +308,42 @@ export class AutoCommentComponent implements OnInit {
             },
             textAlign: 'center'
         }, {
-            field: "title",
-            title: "Tiêu đề",
+            field: "category",
+            title: "Loại",
             sortable: 'asc',
             filterable: false,
+            template: function(row, index, datatable) {
+                return row.webCategory.name;
+            }
         }, {
-            field: "viewNumber",
-            title: "Số lượng view",
-            width: 100,
-            textAlign: 'center'
-        },{
-            field: "commentNumber",
-            title: "Số lượng bình luận",
-            width: 100,
-            textAlign: 'center'
+            field: "url",
+            title: "Url",
+            template: function(row, index, datatable) {
+                return row.webCategory.url;
+            }
         },{
             field: "description",
             title: "Trạng thái",
-            width: 100,
-            textAlign: 'center',
+            template: function(row, index, datatable) {
+                // console.log(row);
+                return row.decription;
+            }
         },
         // {
-        //     field: "status",
+        //     // field: "status",
         //     title: "Trạng thái",
         //     sortable: false,
         //     width: 75,
         //     template: function(row, index, datatable) {
         //         var status = {
         //             0: {
-        //                 'title': `<button data-element-id="${row.id}" class="play m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
+        //                 'title': `<button data-element-id="${row.id}" class="playa m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
         //                 'class': 'm--font-success fa fa-play'
         //             },
         //             1: {
-        //                 'title': `<button data-element-id="${row.id}" class="pause m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Pause"><i class=" fa fa-pause"></i></button>`,
-        //                 'class': 'm--font-success fa fa-pause'
-        //             },
-        //             2: {
-        //                 'title': `<button data-element-id="${row.id}" class="stop m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Finish"><i class=" fa fa-stop"></i></button>`,
+        //                 'title': `<button data-element-id="${row.id}" class="stopa m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Finish"><i class=" fa fa-stop"></i></button>`,
         //                 'class': 'm--font-success fa fa-stop'
         //             },
-        //             3: {
-        //                 'title': `<button data-element-id="${row.id}" class="close m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Fail"><i class=" fa fa-close"></i></button>`,
-        //                 'class': 'm--font-success fa fa-close'
-        //             }
         //         };
         //         return status[row.status].title;
         //     }
@@ -358,27 +355,27 @@ export class AutoCommentComponent implements OnInit {
             template: function(row, index, datatable) {
                 var status = {
                     0: {
-                        'title': `<button data-element-id="${row.id}" class="playa m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
+                        'title': `<button data-element-id="${row.id}" class="playab m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Run"><i class=" fa fa-play"></i></button>`,
                         'class': 'm--font-success fa fa-play'
                     },
                     1: {
-                        'title': `<button data-element-id="${row.id}" class="pausea m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Pause"><i class=" fa fa-pause"></i></button>`,
+                        'title': `<button data-element-id="${row.id}" class="pauseab m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Pause"><i class=" fa fa-pause"></i></button>`,
                         'class': 'm--font-success fa fa-pause'
                     },
                     2: {
-                        'title': `<button data-element-id="${row.id}" class="stopa m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Finish"><i class=" fa fa-stop"></i></button>`,
+                        'title': `<button data-element-id="${row.id}" class="stopab m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Finish"><i class=" fa fa-stop"></i></button>`,
                         'class': 'm--font-success fa fa-stop'
                     },
                     3: {
-                        'title': `<button data-element-id="${row.id}" class="closea m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Fail"><i class=" fa fa-close"></i></button>`,
+                        'title': `<button data-element-id="${row.id}" class="closeab m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Fail"><i class=" fa fa-close"></i></button>`,
                         'class': 'm--font-success fa fa-close'
                     },
                     4: {
                         'title': `
-                                    <button  data-element-id="${row.id}" class="open_dialogaa m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialogaab m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                                         <i class="la la-edit"></i>\
                                     </button >\
-                                    <button  data-element-id="${row.id}" class="deleteaa m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="deleteaab m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                                         <i class="la la-trash"></i>\
                                     </button >\
                                 `,
@@ -392,10 +389,8 @@ export class AutoCommentComponent implements OnInit {
                 }
                 if (row.status === 1) {
                     temp += status[2].title;
-                    temp += status[1].title;
                 }
                 if (row.status === 0 || row.status === 4 || row.status === 2  ) {
-                    temp += status[2].title;
                     temp += status[0].title;
                 }
                 if (row.status === 0 || row.status === 2) {
@@ -425,14 +420,14 @@ export class AutoCommentComponent implements OnInit {
             this.toastr.error(error.error['message'], 'Oops!')
         })
     };
-    getDataAccount() {
-        this._http.get(this.urlGetAccount, {
+    getDataWebCategory(id) {
+        this._http.get(this.urlGetWebCategory+ id, {
             headers: { 
                 'Content-Type': 'application/json',
                 'Auth-Token': localStorage.getItem('Auth-Token')
             }
         }).subscribe((data) => {
-            this.listAccount = data;
+            this.listWebCategory = data;
         },
         (error) => {
             if (error.status == 403) {
@@ -443,14 +438,14 @@ export class AutoCommentComponent implements OnInit {
             this.toastr.error(error.error['message'], 'Oops!')
         })
     };
-    getDataTask() {
-        this._http.get(this.urlGetTask, {
+    getDataWeb() {
+        this._http.get(this.urlGetWeb, {
             headers: { 
                 'Content-Type': 'application/json',
                 'Auth-Token': localStorage.getItem('Auth-Token')
             }
         }).subscribe((data) => {
-            this.listTask = data;
+            this.listWeb = data;
         },
         (error) => {
             if (error.status == 403) {
@@ -466,7 +461,7 @@ export class AutoCommentComponent implements OnInit {
         console.log(id);
     };
     delete(id) {
-        this._http.get(this.urlDeleteTask + id, {
+        this._http.get(this.urlDeleteTaskAutoCactegory + id, {
             headers: { 
                 'Content-Type': 'application/json',
                 'Auth-Token': localStorage.getItem('Auth-Token')
@@ -490,7 +485,7 @@ export class AutoCommentComponent implements OnInit {
     }
 
     play(id) {
-        this._http.get(this.urlResumeTask + id, {
+        this._http.get(this.urlResumeTaskAutoCactegory + id, {
             headers: { 
                 'Auth-Token': localStorage.getItem('Auth-Token')
             }
@@ -510,29 +505,8 @@ export class AutoCommentComponent implements OnInit {
             }
         );
     }
-    pause(id) {
-        this._http.get(this.urlPauseTask + id, {
-            headers: { 
-                'Auth-Token': localStorage.getItem('Auth-Token')
-            }
-        }).subscribe(
-            (data) => {
-                this.toastr.success('Dừng thành công', 'Success!')
-                this.chRef.detectChanges();
-                this.datatable.reload();
-            },
-            (error) => {
-                if (error.status == 403) {
-                    this.toastr.error(error.error['message'], 'Success!')
-                    localStorage.removeItem('Auth-Token');
-                    this._router.navigate(['/logout']);
-                }
-                this.toastr.error(error.error['message'], 'Oops!')
-            }
-        );
-    }
     stop(id) {
-        this._http.get(this.urlStopTask + id, {
+        this._http.get(this.urlStopTaskAutoCactegory + id, {
             headers: { 
                 'Auth-Token': localStorage.getItem('Auth-Token')
             }
@@ -551,5 +525,9 @@ export class AutoCommentComponent implements OnInit {
                 this.toastr.error(error.error['message'], 'Oops!')
             }
         );
+    }
+
+    onChange(id) {
+        this.getDataWebCategory(id);
     }
 }

@@ -38,16 +38,16 @@ export class EnterCategoryComponent implements OnInit {
   
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
   
-        this.datatable = (<any>$('#m_datatable_category')).mDatatable(this.options);
+        this.datatable = (<any>$('#m_datatable_ec')).mDatatable(this.options);
         
-        $(document).on('click', '.open_dialog', (event) => {
+        $(document).on('click', '.open_dialoge', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             console.log(id);
             this.formEdit(id);
             $('#m_modal').modal();
             // this.edit($(event.target).parent().data('element-id'));
         });
-        $(document).on('click', '.delete', (event) => {
+        $(document).on('click', '.deletee', (event) => {
             var id = $(event.target).parent().data('element-id') != undefined ?  $(event.target).parent().data('element-id'):$(event.target).data('element-id');
             this.delete(id);
         });
@@ -70,7 +70,7 @@ export class EnterCategoryComponent implements OnInit {
     urlGetLinkPostById = this._callApi.createUrl('linkpost/id/');
     urlAddLinkPost = this._callApi.createUrl('linkpost/add');
     urlEditLinkPost = this._callApi.createUrl('linkpost/edit');
-    urlDeleteLinkPost = this._callApi.createUrl('linkpost/delete');
+    urlDeleteLinkPost = this._callApi.createUrl('linkpost/delete/');
     
     urlGetAccount = this._callApi.createUrl('account/website/1');
     urlGetWeb = this._callApi.createUrl('website/all');
@@ -83,12 +83,12 @@ export class EnterCategoryComponent implements OnInit {
     listCategory: any;
 
     idCactegory = 1;
-
+    action = 'add';
     onSubmit() {
         if (!this.form.valid) {
             return;
         }
-        if (this.form.valid) {
+        if (this.form.valid && this.action === 'add') {
             this._http.post(this.urlAddLinkPost, JSON.stringify(this.form.value), {
                 headers: { 
                     'Content-Type': 'application/json',
@@ -110,12 +110,16 @@ export class EnterCategoryComponent implements OnInit {
                 }
             );
         }
+        if (this.form.valid && this.action === 'edit') {
+            this.onSubmitEdit();
+        }
     }
     onSubmitEdit() {
             var dataS= {
-                'urlPost': this.form.get('e_urlPost').value,
-                'idCategory': this.form.get('e_idCategory').value,
-                'idWeb': this.form.get('e_idWeb').value,
+                'urlPost': this.form.get('urlPost').value,
+                'idCategory': this.form.get('idCategory').value,
+                'idWeb': this.form.get('idWeb').value,
+                'id': this.form.get('id').value,
             }
             this._http.post(this.urlEditLinkPost, JSON.stringify(dataS), {
                 headers: { 
@@ -128,6 +132,12 @@ export class EnterCategoryComponent implements OnInit {
                     this.toastr.success(data['message'], 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
+                    this.action = 'add';
+                    this.form = this._formBuilder.group({
+                        urlPost: new FormControl('', Validators.required),
+                        idCategory: new FormControl('', Validators.required),
+                        idWeb: new FormControl('', Validators.required),
+                    });
                 },
                 (error) => {
                     if (error.status == 403) {
@@ -141,6 +151,7 @@ export class EnterCategoryComponent implements OnInit {
     }
 
     formEdit(id) {
+        this.action = 'edit';
         this._http.get(this.urlGetLinkPostById + id, {
             headers: { 
                 'Content-Type': 'application/json',
@@ -154,6 +165,7 @@ export class EnterCategoryComponent implements OnInit {
                     urlPost: new FormControl(data['urlPost'], Validators.required),
                     idCategory: new FormControl(data['idCategory'], Validators.required),
                     idWeb: new FormControl(data['idWeb'], Validators.required),
+                    id: new FormControl(data['id'], Validators.required),
                 });
             },
             (error) => {
@@ -169,7 +181,27 @@ export class EnterCategoryComponent implements OnInit {
     }
 
     delete(id) {
-
+        this._http.get(this.urlDeleteLinkPost + id, {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Auth-Token': localStorage.getItem('Auth-Token')
+            }
+        }).subscribe(
+            (data) => {
+                
+                this.toastr.success('Xóa thành công', 'Success!')
+                this.chRef.detectChanges();
+                this.datatable.reload();
+            },
+            (error) => {
+                if (error.status == 403) {
+                    this.toastr.error(error.error['message'], 'Success!')
+                    localStorage.removeItem('Auth-Token');
+                    this._router.navigate(['/logout']);
+                }
+                this.toastr.error(error.error['message'], 'Oops!')
+            }
+        );
     }
 
     onChange(value) {
@@ -180,7 +212,7 @@ export class EnterCategoryComponent implements OnInit {
     }
     //datatables
     public datatable: any;
-    linkPosCategory = this.urlGetLinkPost + this.idCactegory;
+    linkPosCategory = this.urlGetLinkPost;
     public options = {
         data: {
             type: 'remote',
@@ -228,33 +260,36 @@ export class EnterCategoryComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "urlPost",
-            title: "Link Post",
+            title: "Link đăng tin",
             sortable: 'asc',
             filterable: false,
-        }, {
-            field: "accountPost",
-            title: "Account",
-            template: function(row, index, datatable) {
-                return `<span>${row.accountPost.username}</span>`;
-            }
-        },{
-            field: "commentCategory",
-            title: "Category",
-            template: function(row, index, datatable) {
-                return `<span>${row.commentCategory.name}</span>`;
-            }
-        },{
+        }, 
+        // {
+        //     field: "accountPost",
+        //     title: "Tài khoản",
+        //     template: function(row, index, datatable) {
+        //         return `<span>${row.accountPost.username}</span>`;
+        //     }
+        // },
+        // {
+        //     field: "commentCategory",
+        //     title: "Loại",
+        //     template: function(row, index, datatable) {
+        //         return `<span>${row.commentCategory.name}</span>`;
+        //     }
+        // },
+        {
             field: "Actions",
-            title: "Actions",
+            title: "Sự kiện",
             sortable: false,
             width: 75,
             template: function(row, index, datatable) {
                 // var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                 return `
-                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialoga m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
+                    <button  data-element-id="${row.id}" (click)="edit(${row.id})" class="open_dialoge m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
                         <i class="la la-edit"></i>\
                     </button >\
-                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="deletea m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
+                    <button  data-element-id="${row.id}" (click)="delete(${row.id})" class="deletee m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
                         <i class="la la-trash"></i>\
                     </button >\
                 `;

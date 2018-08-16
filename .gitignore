@@ -37,6 +37,7 @@ node_modules/
 jspm_packages/
 tools/node_modules/
 dist/demo/node_modules/
+dist/demo/dist/
 # TypeScript v1 declaration files
 typings/
 
