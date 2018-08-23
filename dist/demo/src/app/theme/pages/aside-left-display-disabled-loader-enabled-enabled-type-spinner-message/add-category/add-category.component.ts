@@ -160,6 +160,7 @@ export class AddCategoryComponent implements OnInit {
                 }
             );
         // }
+        this.setValueFormNull();
     }
 
     setValueFormNull() {

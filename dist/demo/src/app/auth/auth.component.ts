@@ -76,7 +76,7 @@ export class AuthComponent implements OnInit {
         //         this.loading = false;
         //     });
         this.returnUrl = 'index';
-        this._http.post(this.urlLogin,  JSON.stringify({ username: this.model.email, password: this.model.password }), {
+        this._http.post(this.urlLogin,  JSON.stringify({ phone: this.model.email, password: this.model.password }), {
                 headers: { 
                     'Content-Type': 'application/json',
                 },

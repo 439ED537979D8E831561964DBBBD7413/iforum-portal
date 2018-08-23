@@ -57,8 +57,8 @@ export class CommentContentComponent implements OnInit {
         // let tag = (<any>$('.tag').select());
     }
 
-    urlGetCommentCategory = this._callApi.createUrl('comment/all');
-    urlGetComment = this._callApi.createUrl('comment/category/');
+    urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
+    urlGetComment = this._callApi.createUrl('comment/all');
     urlAddComment = this._callApi.createUrl('comment/add');
     urlEditComment = this._callApi.createUrl('comment/edit');
     urlGetCommentById = this._callApi.createUrl('comment/id/');
@@ -76,7 +76,17 @@ export class CommentContentComponent implements OnInit {
         idCategory: new FormControl(''),
         id: new FormControl('1'),
     });
-    
+    reset() {
+        this.action = 'add';
+        this.form = this._formBuilder.group({
+            comment: new FormControl(''),
+            reply: new FormControl(''),
+            idCategory: new FormControl(''),
+            id: new FormControl(''),
+        });
+        $('#comment').summernote('code','');
+        $('#reply').summernote('code', '');
+    }
     formEdit(id) {
         this.action = 'edit';
         this._http.get(this.urlGetCommentById + id, {
@@ -194,7 +204,7 @@ export class CommentContentComponent implements OnInit {
             type: 'remote',
             source: {
                 read: {
-                    url: this.urlGetComment + 1,
+                    url: this.urlGetComment,
                     method: 'GET',
                     headers: { 
                         'Auth-Token': localStorage.getItem('Auth-Token')

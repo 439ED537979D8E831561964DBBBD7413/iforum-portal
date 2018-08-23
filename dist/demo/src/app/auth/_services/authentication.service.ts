@@ -17,7 +17,10 @@ export class AuthenticationService {
     urlLogin = this._callApi.createUrl('login');
 
     login(email: string, password: string) {
-        return this._http.post(this.urlLogin , JSON.stringify({ username: email, password: password }));
+        var dataS = {
+
+        }
+        return this._http.post(this.urlLogin , JSON.stringify({ phone: email, password: password }));
             // .map((response: Response) => {
             //     // login successful if there's a jwt token in the response
             //     localStorage.setItem('currentUser', JSON.stringify(response));
