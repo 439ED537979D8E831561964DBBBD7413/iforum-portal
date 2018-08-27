@@ -133,7 +133,7 @@ export class AccountComponent implements OnInit {
                 }
             }).subscribe(
                 (data) => {
-                    this.toastr.success('Thêm thành công', 'Success!')
+                    this.toastr.success('Nhập tài khoản thành công', 'Success!')
                     this.chRef.detectChanges();
                     this.datatable.reload();
                 },

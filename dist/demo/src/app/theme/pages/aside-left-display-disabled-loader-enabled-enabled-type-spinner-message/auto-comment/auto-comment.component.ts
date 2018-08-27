@@ -64,7 +64,7 @@ export class AutoCommentComponent implements OnInit {
         });
     }
     run() {
-        setInterval(()=> this.datatable.reload() ,15000);
+        setInterval(()=> this.datatable.reload() ,5000);
     }
 
     createAction() {
@@ -305,7 +305,7 @@ export class AutoCommentComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "title",
-            title: "Tiêu đề",
+            title: "Link - Tiêu đề",
             sortable: 'asc',
             filterable: false,
         }, {
