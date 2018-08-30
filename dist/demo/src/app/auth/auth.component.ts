@@ -42,7 +42,8 @@ export class AuthComponent implements OnInit {
         private _callApi: CallApiService,
         public toastr: ToastsManager,
         vRef: ViewContainerRef,
-        private cfr: ComponentFactoryResolver) {
+        private cfr: ComponentFactoryResolver
+    ) {
             this.toastr.setRootViewContainerRef(vRef);
     }
 
@@ -62,7 +63,10 @@ export class AuthComponent implements OnInit {
                 this.handleForgetPasswordFormSubmit();
             });
     }
+
     urlLogin = this._callApi.createUrl('login');
+    urlRegister = this._callApi.createUrl('register');
+    
     signin() {
         this.loading = true;
         // this._authService.login(this.model.email, this.model.password)
@@ -76,7 +80,7 @@ export class AuthComponent implements OnInit {
         //         this.loading = false;
         //     });
         this.returnUrl = 'index';
-        this._http.post(this.urlLogin,  JSON.stringify({ phone: this.model.email, password: this.model.password }), {
+        this._http.post(this.urlLogin,  JSON.stringify({ phone: this.model.phone, password: this.model.password }), {
                 headers: { 
                     'Content-Type': 'application/json',
                 },
@@ -101,21 +105,40 @@ export class AuthComponent implements OnInit {
 
     signup() {
         this.loading = true;
-        this._userService.create(this.model).subscribe(
-            data => {
-                this.showAlert('alertSignin');
-                this._alertService.success(
-                    'Thank you. To complete your registration please check your email.',
-                    true);
-                this.loading = false;
-                this.displaySignInForm();
-                this.model = {};
-            },
-            error => {
-                this.showAlert('alertSignup');
-                this._alertService.error(error);
-                this.loading = false;
-            });
+        this.returnUrl = 'index';
+        if (this.model.password != this.model.rpassword) {
+            this.toastr.error('Hãy xác nhận đúng mật khẩu!', 'Lỗi!');
+            return;
+        }
+        var data = {
+            "name": this.model.name,
+            "phone": this.model.phone,
+            "email": this.model.email,
+            "password": this.model.password,
+            "web": this.model.web,
+            "facebook": this.model.facebook,
+        }
+        this._http.post(this.urlRegister,  JSON.stringify(data), {
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            }).subscribe(
+                (data) => {
+                    // console.log(data);
+                    this.toastr.success('Đăng ký thành công', 'Success!')
+                    localStorage.setItem('Auth-Token', data['message']);
+                    this.loading = false;
+                    this._router.navigate([this.returnUrl]);
+                },
+                (error) => {
+                    console.log(error);
+                    // this.showAlert('alertSignin');
+                    this.toastr.error(error.error['message'], 'Oops!')
+                    // this._alertService.error(error);
+                    this.loading = false;
+                }
+            );
     }
 
     forgotPass() {
