@@ -89,7 +89,13 @@ export class EnterCategoryComponent implements OnInit {
             return;
         }
         if (this.form.valid && this.action === 'add') {
-            this._http.post(this.urlAddLinkPost, JSON.stringify(this.form.value), {
+            var dataS= {
+                'url_post': this.form.get('urlPost').value,
+                'id_category': this.form.get('idCategory').value,
+                'id_web': this.form.get('idWeb').value,
+                'id': this.form.get('id').value,
+            }
+            this._http.post(this.urlAddLinkPost, JSON.stringify(dataS), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
@@ -116,9 +122,9 @@ export class EnterCategoryComponent implements OnInit {
     }
     onSubmitEdit() {
             var dataS= {
-                'urlPost': this.form.get('urlPost').value,
-                'idCategory': this.form.get('idCategory').value,
-                'idWeb': this.form.get('idWeb').value,
+                'url_post': this.form.get('urlPost').value,
+                'id_category': this.form.get('idCategory').value,
+                'id_web': this.form.get('idWeb').value,
                 'id': this.form.get('id').value,
             }
             this._http.post(this.urlEditLinkPost, JSON.stringify(dataS), {
@@ -148,6 +154,8 @@ export class EnterCategoryComponent implements OnInit {
                     this.toastr.error(error.error['message'], 'Oops!')
                 }
             );
+            
+            this.action = 'add';
     }
 
     formEdit(id) {
@@ -204,6 +212,16 @@ export class EnterCategoryComponent implements OnInit {
         );
     }
 
+    reset(){
+        this.action = 'add';
+        this.form = this._formBuilder.group({
+            urlPost: new FormControl('', Validators.required),
+            idCategory: new FormControl('',Validators.required),
+            // accountPost: new FormControl('', Validators.required),
+            // commentCategory: new FormControl('',Validators.required),
+            idWeb: new FormControl('',Validators.required),
+        });
+    }
     onChange(value) {
         this.idCactegory = 1;
         this.chRef.detectChanges();

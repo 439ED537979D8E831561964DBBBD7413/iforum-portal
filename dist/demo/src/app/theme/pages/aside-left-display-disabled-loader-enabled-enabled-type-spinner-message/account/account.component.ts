@@ -124,7 +124,7 @@ export class AccountComponent implements OnInit {
                 'email': this.form.get('email').value,
                 'password': this.form.get('password').value,
                 'status': this.form.get('status').value || 0,
-                'idWeb': this.form.get('idWeb').value,
+                'id_web': this.form.get('idWeb').value,
             }
             this._http.post(this.urlAddAccount, JSON.stringify(data), {
                 headers: { 
@@ -158,7 +158,7 @@ export class AccountComponent implements OnInit {
                 email: this.editForm.get('e_email').value,
                 password: this.editForm.get('e_password').value,
                 status: this.editForm.get('e_status').value,
-                idWeb: this.editForm.get('e_idWeb').value,
+                id_web: this.editForm.get('e_idWeb').value,
                 id: this.editForm.get('e_id').value,
             }
             this._http.post(this.urlEditAccount, JSON.stringify(dataS), {

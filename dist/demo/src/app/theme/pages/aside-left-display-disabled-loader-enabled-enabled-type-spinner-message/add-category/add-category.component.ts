@@ -226,7 +226,12 @@ export class AddCategoryComponent implements OnInit {
             textAlign: 'center'
         }, {
             field: "name",
-            title: "Loại",
+            title: "Tên",
+            sortable: 'asc',
+            filterable: false,
+        },{
+            field: "link_posts",
+            title: "Link",
             sortable: 'asc',
             filterable: false,
         }, {

@@ -93,29 +93,29 @@ export class IndexComponent implements OnInit, AfterViewInit {
             field: "comment_last",
             title: "Bình luận cuối",
             template: function(row, index, datatable) {
-                var ct = row.commentTasks[0];
+                var ct = row.task_comments[0];
                 if (!ct) {
                     return '';
                 }
                 if (ct.status != 2) {
-                    return ct.comment.contentComment;
+                    return ct.comment.content_comment;
                 }
-                if (ct.accountComment === null || ct.accountComment === undefined) {
+                if (ct.account_comment === null || ct.account_comment === undefined) {
                     return ct.description;
                 }
-                return ct.accountComment.username +' - '+ ct.description;
+                return ct.account_comment.username +' - '+ ct.description;
             }
         },{
             field: "replyt_last",
             title: "Trả lời cuối",
             sortable: false,
             template: function(row, index, datatable) {
-                var ct = row.commentTasks[0];
+                var ct = row.task_comments[0];
                 if (!ct) {
                     return '';
                 }
                 if (ct.status === 1) {
-                    return ct.comment.contentReply;
+                    return ct.comment.content_reply;
                 }
                 if (ct.status === 2) {
                     return '';

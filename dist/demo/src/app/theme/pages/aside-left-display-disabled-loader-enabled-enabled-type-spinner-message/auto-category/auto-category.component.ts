@@ -31,9 +31,9 @@ export class AutoCategoryComponent implements OnInit {
         this.getDataWebCategory(1);
         this.getDataCommentCategory();
         this.getDataWeb();
-        this.run();
     }
     ngAfterViewInit() {
+        this.run();
         this._script.loadScripts('app-index',
             ['assets/app/js/dashboard.js']);
   
@@ -159,10 +159,10 @@ export class AutoCategoryComponent implements OnInit {
         if (this.form.valid && this.action === 'add') {
             var dataS = {
                 'id': 0,
-                'idWeb': 1,
-                'idCommentCategory': this.form.get('idCommentCategory').value,
-                'idWebCategory': this.form.get('idWebCategory').value,
-                'timeSleep': [
+                'id_web': 1,
+                'id_comment_category': this.form.get('idCommentCategory').value,
+                'id_web_category': this.form.get('idWebCategory').value,
+                'time_sleeps': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
@@ -202,10 +202,10 @@ export class AutoCategoryComponent implements OnInit {
         // if (this.editForm.valid) {
             var dataS = {
                 'id': this.form.get('id').value,
-                'idWeb': this.form.get('idWeb').value,
-                'idCommentCategory': this.form.get('idCommentCategory').value,
-                'idWebCategory': this.form.get('idWebCategory').value,
-                'timeSleep': [
+                'id_web': this.form.get('idWeb').value,
+                'id_comment_category': this.form.get('idCommentCategory').value,
+                'id_web_category': this.form.get('idWebCategory').value,
+                'time_sleeps': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,

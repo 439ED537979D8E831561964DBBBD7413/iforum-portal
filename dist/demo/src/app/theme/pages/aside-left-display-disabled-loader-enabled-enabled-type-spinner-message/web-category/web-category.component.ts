@@ -84,7 +84,13 @@ export class WebCategoryComponent implements OnInit {
             return;
         }
         if (this.form.valid && this.action === 'add') {
-            this._http.post(this.urlAddWebCategory, JSON.stringify(this.form.value), {
+            var dataS= {
+                'id': this.form.get('id').value,
+                'url': this.form.get('url').value,
+                'name': this.form.get('name').value,
+                'id_web': this.form.get('idWeb').value,
+            }
+            this._http.post(this.urlAddWebCategory, JSON.stringify(dataS), {
                 headers: { 
                     'Content-Type': 'application/json',
                     'Auth-Token': localStorage.getItem('Auth-Token')
@@ -114,7 +120,7 @@ export class WebCategoryComponent implements OnInit {
                 'id': this.form.get('id').value,
                 'url': this.form.get('url').value,
                 'name': this.form.get('name').value,
-                'idWeb': this.form.get('idWeb').value,
+                'id_web': this.form.get('idWeb').value,
             }
             this._http.post(this.urlEditWebCategory, JSON.stringify(dataS), {
                 headers: { 

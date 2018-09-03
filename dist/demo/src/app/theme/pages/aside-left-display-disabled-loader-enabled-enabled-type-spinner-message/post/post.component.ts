@@ -67,18 +67,18 @@ export class PostComponent implements OnInit {
         }
         if (this.form.valid) {
             var dataS = {
-                'idWeb': 1,
+                'id_web': 1,
                 'content': (<any>$(this.summernote).val()),
-                'idCategory': this.form.get('idCategory').value,
-                'idCommentCategory': this.form.get('idCommentCategory').value,
+                'id_category': this.form.get('idCategory').value,
+                'id_comment_category': this.form.get('idCommentCategory').value,
                 'title': this.form.get('title').value,
-                'timeSleep': [
+                'time_sleeps': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
                     this.form.get('time4').value
                 ],
-                'viewCount': this.form.get('viewCount').value
+                'view_requirement': this.form.get('viewCount').value
             }
             this._http.post(this.urlPost, JSON.stringify(dataS), {
                 headers: { 'Content-Type': 'application/json'}

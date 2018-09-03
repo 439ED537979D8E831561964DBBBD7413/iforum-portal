@@ -30,9 +30,10 @@ export class AutoCommentComponent implements OnInit {
         this.getDataAccount();
         this.getDataCommentCategory();
         this.getDataTask();
-        this.run();
     }
     ngAfterViewInit() {
+        
+        this.run();
         this._script.loadScripts('app-index',
             ['assets/app/js/dashboard.js']);
   

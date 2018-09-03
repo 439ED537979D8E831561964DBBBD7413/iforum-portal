@@ -124,9 +124,9 @@ export class CommentContentComponent implements OnInit {
         }
         if (this.form.valid && this.action === 'add') {
             var dataS= {
-                'contentComment': (<any>$(this.comment).val()),
-                'contentReply': (<any>$(this.reply).val()),
-                'idCategory': this.form.get('idCategory').value,
+                'content_comment': (<any>$(this.comment).val()),
+                'content_reply': (<any>$(this.reply).val()),
+                'id_category': this.form.get('idCategory').value,
                 'id': 1,
             }
             this._http.post(this.urlAddComment, dataS, { 
@@ -162,9 +162,9 @@ export class CommentContentComponent implements OnInit {
         // }
         // if (this.editForm.valid) {
             var dataS= {
-                'contentComment': (<any>$(this.comment).val()),
-                'contentReply': (<any>$(this.reply).val()),
-                'idCategory': this.form.get('idCategory').value,
+                'content_comment': (<any>$(this.comment).val()),
+                'content_reply': (<any>$(this.reply).val()),
+                'id_category': this.form.get('idCategory').value,
                 'id': this.form.get('id').value,
             }
             this._http.post(this.urlEditComment, JSON.stringify(dataS), {
@@ -245,11 +245,11 @@ export class CommentContentComponent implements OnInit {
             },
             textAlign: 'center'
         }, {
-            field: "contentComment",
+            field: "content_comment",
             title: "Nội dung bình luận",
             sortable: 'asc',
         }, {
-            field: "contentReply",
+            field: "content_reply",
             title: "Nội dung trả lời",
             sortable: 'asc',
         }, {
