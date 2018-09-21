@@ -16,6 +16,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AccountComponent implements OnInit {
     
+    id = this.route.snapshot.paramMap.get('id');
+
     constructor(
         private _script: ScriptLoaderService,
         private _callApi: CallApiService,
@@ -24,6 +26,7 @@ export class AccountComponent implements OnInit {
         private chRef: ChangeDetectorRef,
         public toastr: ToastsManager,
         private _router: Router,
+        private route: ActivatedRoute,
         vRef: ViewContainerRef,
     ) {
         this.toastr.setRootViewContainerRef(vRef);
@@ -31,6 +34,7 @@ export class AccountComponent implements OnInit {
 
     ngOnInit() {
         // this.run();
+        console.log(this.id);
     }
     ngAfterViewInit() {
         this._script.loadScripts('app-index',
@@ -38,6 +42,11 @@ export class AccountComponent implements OnInit {
 
         Helpers.bodyClass('m-page--fluid m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default');
 
+        setTimeout(()=> function(){
+            
+        }, 1000);
+        
+        console.log(this.id);
         this.datatable = (<any>$('#m_datatable_account')).mDatatable(this.options);
 
         $(document).on('click', '.open_dialogacc', (event) => {
@@ -65,7 +74,7 @@ export class AccountComponent implements OnInit {
         email: new FormControl(''),
         password: new FormControl('', Validators.required),
         status: new FormControl(''),
-        idWeb: new FormControl('1'),
+        idWeb: new FormControl(this.id),
     });
 
     editForm = this._formBuilder.group({
@@ -73,7 +82,7 @@ export class AccountComponent implements OnInit {
         e_email: new FormControl(''),
         e_password: new FormControl('', Validators.required),
         e_status: new FormControl(''),
-        e_idWeb: new FormControl('1'),
+        e_idWeb: new FormControl(this.id),
         e_id: new FormControl(''),
     });
     
@@ -112,13 +121,14 @@ export class AccountComponent implements OnInit {
     urlEditAccount = this._callApi.createUrl('account/edit');
     urlGetAccount = this._callApi.createUrl('account/id/');
     urlDeleteAccount = this._callApi.createUrl('account/delete/');
+    urlAutoRegister = this._callApi.createUrl('account/register/website/'+this.id);
 
     onSubmit() {
         if (!this.form.valid) {
             return;
         }
         if (this.form.valid) {
-            console.log(this.form.value);
+            // console.log(this.form.value);
             var data = {
                 'username': this.form.get('username').value,
                 'email': this.form.get('email').value,
@@ -148,6 +158,46 @@ export class AccountComponent implements OnInit {
             );
         }
     }
+
+    autoRegister() {
+        if (!this.form.valid) {
+            return;
+        }
+        if (this.form.valid) {
+            // console.log(this.form.value);
+            var data = {
+                'account': {
+                    'username': this.form.get('username').value,
+                    'email': this.form.get('email').value,
+                    'password': this.form.get('password').value,
+                    'status': this.form.get('status').value || 0,
+                    'id_web': this.form.get('idWeb').value,
+                },
+                'token': '10'
+            }
+            this._http.post(this.urlAutoRegister, JSON.stringify(data), {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Auth-Token': localStorage.getItem('Auth-Token')
+                }
+            }).subscribe(
+                (data) => {
+                    this.toastr.success('Đăng ký tự động thành công', 'Thành công!')
+                    this.chRef.detectChanges();
+                    this.datatable.reload();
+                },
+                (error) => {
+                    if (error.status == 403) {
+                        this.toastr.error(error.error['message'], 'Lỗi!')
+                        localStorage.removeItem('Auth-Token');
+                        this._router.navigate(['/logout']);
+                    }
+                    this.toastr.error(error.error['message'], 'Oops!')
+                }
+            );
+        }
+    }
+
     onSubmitEdit() {
         if (!this.editForm.valid) {
             return;
@@ -187,7 +237,7 @@ export class AccountComponent implements OnInit {
 
     //datatables
     public datatable: any;
-    public urlApi = this._callApi.createUrl('account/website/1');
+    public urlApi = this._callApi.createUrl('account/website/'+this.id+'/all');
     public options = {
         data: {
             type: 'remote',
@@ -238,31 +288,34 @@ export class AccountComponent implements OnInit {
             title: "Tài khoản",
             sortable: 'asc',
             filterable: false,
-            width: 100,
         }, {
             field: "password",
             title: "Mật khẩu",
-            width: 100,
         }, {
-            field: "status",
+            field: "description",
             title: "Trạng thái",
-            width: 75,
-            textAlign: 'center',
-            // callback function support for column rendering
-            template: function(row) {
-                var status = {
-                    1: {
-                        'title': '<i class="fa fa-check"></i>',
-                        'class': 'm--font-success fa fa-check'
-                    },
-                    0: {
-                        'title': '<i class="fa fa-times"></i>',
-                        'class': 'm--font-danger fa fa-times'
-                    }
-                };
-                return '<span class="' + status[row.status].class + '"></span>';
-            }
-        },{
+        }, 
+        // {
+        //     field: "status",
+        //     title: "Trạng thái",
+        //     width: 75,
+        //     textAlign: 'center',
+        //     // callback function support for column rendering
+        //     template: function(row) {
+        //         var status = {
+        //             1: {
+        //                 'title': '<i class="fa fa-check"></i>',
+        //                 'class': 'm--font-success fa fa-check'
+        //             },
+        //             0: {
+        //                 'title': '<i class="fa fa-times"></i>',
+        //                 'class': 'm--font-danger fa fa-times'
+        //             }
+        //         };
+        //         return '<span class="' + status[row.status].class + '"></span>';
+        //     }
+        // },
+        {
             field: "Actions",
             title: "Sự kiện",
             sortable: false,

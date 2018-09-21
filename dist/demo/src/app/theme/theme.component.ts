@@ -24,24 +24,29 @@ export class ThemeComponent implements OnInit {
                 // optional js to be loaded once
                 this._script.loadScripts('head', ['assets/vendors/custom/fullcalendar/fullcalendar.bundle.js'], true);
             });
+        // this._router.routeReuseStrategy.shouldReuseRoute = () => false;
         this._router.events.subscribe((route) => {
             if (route instanceof NavigationStart) {
                 (<any>mLayout).closeMobileAsideMenuOffcanvas();
                 (<any>mLayout).closeMobileHorMenuOffcanvas();
                 Helpers.setLoading(true);
+                
                 // hide visible popover
                 (<any>$('[data-toggle="m-popover"]')).popover('hide');
+                this._router.navigated = true;
             }
             if (route instanceof NavigationEnd) {
                 // init required js
                 (<any>mApp).init();
                 (<any>mUtil).init();
                 Helpers.setLoading(false);
+                
                 // content m-wrapper animation
                 let animation = 'm-animate-fade-in-up';
                 $('.m-wrapper').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
                     $('.m-wrapper').removeClass(animation);
                 }).removeClass(animation).addClass(animation);
+                this._router.navigated = false;
             }
         });
     }

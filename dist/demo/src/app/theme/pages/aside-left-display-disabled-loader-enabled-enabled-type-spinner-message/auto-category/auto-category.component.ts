@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 declare var $:any
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 @Component({
   selector: 'app-auto-category',
   templateUrl: './auto-category.component.html',
@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AutoCategoryComponent implements OnInit {
 
+    id = this.route.snapshot.paramMap.get('id');
     constructor(
         private _script: ScriptLoaderService,
         private _callApi: CallApiService,
@@ -21,14 +22,27 @@ export class AutoCategoryComponent implements OnInit {
         private _http: HttpClient,
         private chRef: ChangeDetectorRef,
         public toastr: ToastsManager,
+        private route: ActivatedRoute,
         private _router: Router,
         vRef: ViewContainerRef,
     ) {
         this.toastr.setRootViewContainerRef(vRef);
+        // this._router.routeReuseStrategy.shouldReuseRoute = function(){
+        //     return false;
+        // }
+    
+        //  this._router.events.subscribe((evt) => {
+        //     if (evt instanceof NavigationEnd) {
+        //        // trick the Router into believing it's last link wasn't previously loaded
+        //        this._router.navigated = false;
+        //        // if you need to scroll back to top, here is the right place
+        //     //    window.scrollTo(0, 0);
+        //     }
+        // });
     }
     ngOnInit() {
-        // this.getDataWebCategory();
-        this.getDataWebCategory(1);
+        // this.getDataWebCategory();d
+        this.getDataWebCategory(this.id);
         this.getDataCommentCategory();
         this.getDataWeb();
     }
@@ -75,7 +89,7 @@ export class AutoCategoryComponent implements OnInit {
         time3: new FormControl('', Validators.required),
         time4: new FormControl('', Validators.required),
         idWebCategory: new FormControl(''),
-        idWeb: new FormControl(''),
+        idWeb: new FormControl(this.id),
     });
 
     setForm() {
@@ -86,7 +100,7 @@ export class AutoCategoryComponent implements OnInit {
             time3: new FormControl('', Validators.required),
             time4: new FormControl('', Validators.required),
             idWebCategory: new FormControl(''),
-            idWeb: new FormControl(''),
+            idWeb: new FormControl(this.id),
         });
     }
     reset(){
@@ -98,14 +112,14 @@ export class AutoCategoryComponent implements OnInit {
             time3: new FormControl('', Validators.required),
             time4: new FormControl('', Validators.required),
             idWebCategory: new FormControl(''),
-            idWeb: new FormControl(''),
+            idWeb: new FormControl(this.id),
         });
     }
     urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
     urlGetWebCategory = this._callApi.createUrl('webcategory/website/');
     urlGetWeb = this._callApi.createUrl('website/all');
 
-    urlGetTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/website/1');
+    urlGetTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/website/'+this.id);
     urlGetTaskByIdAutoCactegory = this._callApi.createUrl('taskwebcategory/id/');
     urlEditTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/edit');
     urlAddTaskAutoCactegory = this._callApi.createUrl('taskwebcategory/add');
@@ -231,7 +245,7 @@ export class AutoCategoryComponent implements OnInit {
                         time3: new FormControl('', Validators.required),
                         time4: new FormControl('', Validators.required),
                         idWebCategory: new FormControl(''),
-                        idWeb: new FormControl(''),
+                        idWeb: new FormControl(this.id),
                     });
                 },
                 (error) => {
@@ -255,7 +269,7 @@ export class AutoCategoryComponent implements OnInit {
             time3: new FormControl('', Validators.required),
             time4: new FormControl('', Validators.required),
             idWebCategory: new FormControl(''),
-            idWeb: new FormControl(''),
+            idWeb: new FormControl(this.id),
         });
     }
     //datatables

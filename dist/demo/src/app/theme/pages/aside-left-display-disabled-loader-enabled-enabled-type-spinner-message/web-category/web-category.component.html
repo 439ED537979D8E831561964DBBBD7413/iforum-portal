@@ -30,30 +30,6 @@
                     <input formControlName="name" aria-describedby="emailHelp" class="form-control m-input m-input--solid" id="exampleInputEmail1" placeholder="Tên" type="text">
                     <div *ngIf="!form.get('name').valid && form.get('name').touched" id="email-error" class="form-control-feedback">This field is required.</div>
                 </div>
-                <!-- <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleSelect1">Loại</label>
-                    <select formControlName="idCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
-                        <option *ngFor="let cc of listCategory" value="{{ cc.id }}">{{ cc.name }}</option>
-                    </select>
-                </div> -->
-                <!-- <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleSelect1">Category Comment</label>
-                    <select formControlName="commentCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
-                        <option *ngFor="let cc of listCommentCategory" value="{{ cc.id }}">{{ cc.name }}</option>
-                    </select>
-                </div>
-                <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleSelect1">Account</label>
-                    <select formControlName="commentCategory" class="form-control m-input m-input--solid" id="exampleSelect1" (change)="onChange($event.target.value)">
-                        <option *ngFor="let cc of listAccount" value="{{ cc.id }}">{{ cc.username }}</option>
-                    </select>
-                </div> -->
-                <!-- <div class="col-lg-6 m-form__group-sub">
-                    <label for="exampleSelect1">Website</label>
-                    <select formControlName="idWeb" class="form-control m-input m-input--solid" id="exampleSelect1">
-                        <option *ngFor="let cc of listWeb" value="{{ cc.id }}">{{ cc.name }}</option>
-                    </select>
-                </div> -->
             </div>
         </div>
         <div class="m-portlet__foot m-portlet__foot--fit">
@@ -61,7 +37,7 @@
                 <button class="btn btn-success" type="submit" [disabled]="!form.valid">
                     Gửi
                 </button>
-                <button class="btn btn-secondary" type="reset" (click)="reset()">
+                <button class="btn btn-secondary" type="reset">
                     Hủy
                 </button>
             </div>

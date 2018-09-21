@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 declare var $:any
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 @Component({
   selector: 'app-auto-comment',
   templateUrl: './auto-comment.component.html',
@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AutoCommentComponent implements OnInit {
 
+    id = this.route.snapshot.paramMap.get('id');
     constructor(
         private _script: ScriptLoaderService,
         private _callApi: CallApiService,
@@ -22,9 +23,22 @@ export class AutoCommentComponent implements OnInit {
         private chRef: ChangeDetectorRef,
         public toastr: ToastsManager,
         private _router: Router,
+        private route: ActivatedRoute,
         vRef: ViewContainerRef,
     ) {
         this.toastr.setRootViewContainerRef(vRef);
+        // this._router.routeReuseStrategy.shouldReuseRoute = function(){
+        //     return false;
+        // }
+    
+        //  this._router.events.subscribe((evt) => {
+        //     if (evt instanceof NavigationEnd) {
+        //        // trick the Router into believing it's last link wasn't previously loaded
+        //        this._router.navigated = false;
+        //        // if you need to scroll back to top, here is the right place
+        //     //    window.scrollTo(0, 0);
+        //     }
+        // });
     }
     ngOnInit() {
         this.getDataAccount();
@@ -81,12 +95,12 @@ export class AutoCommentComponent implements OnInit {
         time4: new FormControl(''),
         viewCount: new FormControl(''),
         idAccount: new FormControl(''),
-        idWeb: new FormControl('1'),
+        idWeb: new FormControl(this.id),
     });
     count = new FormControl(0);
     urlAddAccount = this._callApi.createUrl('account/add');
     urlGetCommentCategory = this._callApi.createUrl('commentcategory/all');
-    urlGetAccount = this._callApi.createUrl('account/website/1');
+    urlGetAccount = this._callApi.createUrl('account/website/'+this.id);
 
     urlGetTask = this._callApi.createUrl('task/all');
     urlGetTaskById = this._callApi.createUrl('task/id/');
@@ -145,17 +159,17 @@ export class AutoCommentComponent implements OnInit {
         if (this.form.valid && this.action === 'add') {
             var dataS = {
                 'id': 0,
-                'idWeb': 1,
-                'idAccountPost': this.form.get('idAccount').value,
-                'idCommentCategory': this.form.get('idCommentCategory').value,
+                'id_web': 1,
+                'id_account_post': this.form.get('idAccount').value,
+                'id_comment_category': this.form.get('idCommentCategory').value,
                 'url': this.form.get('urlPost').value,
-                'timeSleep': [
+                'time_sleeps': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
                     this.form.get('time4').value
                 ],
-                'viewCount': this.form.get('viewCount').value || 0
+                'view_requirement': this.form.get('viewCount').value || 0
             }
             this._http.post(this.urlAddTask, JSON.stringify(dataS), {
                 headers: { 
@@ -190,17 +204,17 @@ export class AutoCommentComponent implements OnInit {
         // if (this.editForm.valid) {
             var dataS = {
                 'id': this.form.get('id').value,
-                'idWeb': this.form.get('idWeb').value,
-                'idAccountPost': this.form.get('idAccount').value,
-                'idCommentCategory': this.form.get('idCommentCategory').value,
+                'id_web': this.form.get('idWeb').value,
+                'id_account_post': this.form.get('idAccount').value,
+                'id_comment_category': this.form.get('idCommentCategory').value,
                 'url': this.form.get('urlPost').value,
-                'timeSleep': [
+                'time_sleeps': [
                     this.form.get('time1').value,
                     this.form.get('time2').value,
                     this.form.get('time3').value,
                     this.form.get('time4').value
                 ],
-                'viewCount': this.form.get('viewCount').value || 0
+                'view_requirement': this.form.get('viewCount').value || 0
             }
             this._http.post(this.urlEditTask, JSON.stringify(dataS), {
                 headers: { 
@@ -238,7 +252,7 @@ export class AutoCommentComponent implements OnInit {
             time4: new FormControl(''),
             viewCount: new FormControl(''),
             idAccount: new FormControl(''),
-            idWeb: new FormControl('1'),
+            idWeb: new FormControl(this.id),
         });
     }
     setValueFormNull() {
@@ -252,7 +266,7 @@ export class AutoCommentComponent implements OnInit {
             time4: new FormControl(''),
             viewCount: new FormControl(''),
             idAccount: new FormControl(''),
-            idWeb: new FormControl('1'),
+            idWeb: new FormControl(this.id),
         });
     }
     //datatables

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { Helpers } from '../../../helpers';
+import { Router } from '@angular/router';
 
 declare let mLayout: any;
+declare var $:any
 @Component({
     selector: "app-header-nav",
     templateUrl: "./header-nav.component.html",
@@ -10,7 +12,9 @@ declare let mLayout: any;
 export class HeaderNavComponent implements OnInit, AfterViewInit {
 
 
-    constructor() {
+    constructor(
+        private _router: Router
+    ) {
 
     }
     ngOnInit() {
@@ -20,6 +24,12 @@ export class HeaderNavComponent implements OnInit, AfterViewInit {
 
         mLayout.initHeader();
 
+    }
+
+    route(event) {
+        let re = $(event.target).parent().data('route') != undefined ?  $(event.target).parent().data('route'):$(event.target).data('route');
+        console.log(re);
+        this._router.navigate([re]);
     }
 
 }

@@ -51,8 +51,11 @@ export class AuthComponent implements OnInit {
         this.model.remember = true;
         // get return url from route parameters or default to '/'
         this.returnUrl = this._route.snapshot.queryParams['returnUrl'] || '/';
+        if (localStorage.getItem('Auth-Token')){
+            this.returnUrl = '/index';
+        }
+        
         this._router.navigate([this.returnUrl]);
-
         this._script.loadScripts('body', [
             'assets/vendors/base/vendors.bundle.js',
             'assets/demo/demo/base/scripts.bundle.js'], true).then(() => {

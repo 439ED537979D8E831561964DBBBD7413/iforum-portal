@@ -6,7 +6,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 declare var $:any
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 @Component({
   selector: 'app-web-category',
   templateUrl: './web-category.component.html',
@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class WebCategoryComponent implements OnInit {
 
+    id = this.route.snapshot.paramMap.get('id');
     constructor(
         private _script: ScriptLoaderService,
         private _callApi: CallApiService,
@@ -22,14 +23,24 @@ export class WebCategoryComponent implements OnInit {
         private chRef: ChangeDetectorRef,
         public toastr: ToastsManager,
         private _router: Router,
+        private route: ActivatedRoute,
         vRef: ViewContainerRef,
     ) {
         this.toastr.setRootViewContainerRef(vRef);
+        // this._router.routeReuseStrategy.shouldReuseRoute = function(){
+        //     return false;
+        // }
+    
+        //  this._router.events.subscribe((evt) => {
+        //     if (evt instanceof NavigationEnd) {
+        //        // trick the Router into believing it's last link wasn't previously loaded
+        //        this._router.navigated = false;
+        //        // if you need to scroll back to top, here is the right place
+        //     //    window.scrollTo(0, 0);
+        //     }
+        // });
     }
     ngOnInit() {
-        // this.getDataAccount();
-        // this.getDataCategory();
-        // this.getDataCommentCategory();
         this.getDataWebCategory();
     }
     ngAfterViewInit() {
@@ -55,40 +66,30 @@ export class WebCategoryComponent implements OnInit {
         });
     }
     form = this._formBuilder.group({
+        id: new FormControl(''),
         url: new FormControl('', Validators.required),
         name: new FormControl('',Validators.required),
-        // accountPost: new FormControl('', Validators.required),
-        // commentCategory: new FormControl('',Validators.required),
-        idWeb: new FormControl('1'),
+        idWeb: new FormControl(this.id),
     });
 
-    urlGetWebCategory = this._callApi.createUrl('webcategory/website/1');
+    urlGetWebCategory = this._callApi.createUrl('webcategory/website/'+this.id);
     urlGetWebCategoryById = this._callApi.createUrl('webcategory/id/');
     urlAddWebCategory = this._callApi.createUrl('webcategory/add');
     urlEditWebCategory = this._callApi.createUrl('webcategory/edit');
     urlDeleteWebCategory = this._callApi.createUrl('webcategory/delete/');
 
     action = 'add';
-    reset() {
-        this.action = 'add';
-        this.form = this._formBuilder.group({
-            url: new FormControl('', Validators.required),
-            name: new FormControl('',Validators.required),
-            // accountPost: new FormControl('', Validators.required),
-            // commentCategory: new FormControl('',Validators.required),
-            idWeb: new FormControl('1'),
-        });
-    }
+
     onSubmit() {
         if (!this.form.valid) {
             return;
         }
         if (this.form.valid && this.action === 'add') {
             var dataS= {
-                'id': this.form.get('id').value,
-                'url': this.form.get('url').value,
-                'name': this.form.get('name').value,
-                'id_web': this.form.get('idWeb').value,
+                id: this.form.get('id').value,
+                url: this.form.get('url').value,
+                name: this.form.get('name').value,
+                id_web: this.form.get('idWeb').value,
             }
             this._http.post(this.urlAddWebCategory, JSON.stringify(dataS), {
                 headers: { 
@@ -147,7 +148,7 @@ export class WebCategoryComponent implements OnInit {
             this.form = this._formBuilder.group({
                 url: new FormControl('', Validators.required),
                 name: new FormControl('', Validators.required),
-                idWeb: new FormControl(1),
+                idWeb: new FormControl(this.id),
             });
     }
 
@@ -165,43 +166,16 @@ export class WebCategoryComponent implements OnInit {
                 id: new FormControl(this.webc.id),
                 url: new FormControl(this.webc.url, Validators.required),
                 name: new FormControl(this.webc.name, Validators.required),
-                idWeb: new FormControl('1'),
+                idWeb: new FormControl(this.id),
             });
         } else {
             this.toastr.error("Chuyên mục không tồn tại", 'Oops!')
         }
-        
-        // this._http.get(this.urlGetWebCategoryById + id, {
-        //     headers: { 
-        //         'Content-Type': 'application/json',
-        //         'Auth-Token': localStorage.getItem('Auth-Token')
-        //     }
-        // }).subscribe(
-        //     (data) => {
-        //         console.log(data);
-        //         // var dataParse = JSON.parse(data);
-        //         this.form = this._formBuilder.group({
-        //             url: new FormControl(data['url'], Validators.required),
-        //             name: new FormControl(data['name'], Validators.required),
-        //             idWeb: new FormControl(1, Validators.required),
-        //         });
-        //     },
-        //     (error) => {
-        //         if (error.status == 403) {
-        //             this.toastr.error(error.error['message'], 'Success!')
-        //             localStorage.removeItem('Auth-Token');
-        //             this._router.navigate(['/logout']);
-        //         }
-        //         this.toastr.error(error.error['message'], 'Oops!')
-        //     }
-        // );
-        
     }
 
     onChange(value) {
         // this.idCactegory = 1;
         this.chRef.detectChanges();
-        
         this.datatable.reload();
     }
     //datatables
