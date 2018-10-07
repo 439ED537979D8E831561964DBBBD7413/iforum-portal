@@ -203,12 +203,14 @@ export class AccountComponent implements OnInit {
             return;
         }
         if (this.editForm.valid) {
+            console.log(this.editForm.value);
+            console.log(this.form.value);
             var dataS = {
                 username: this.editForm.get('e_username').value,
                 email: this.editForm.get('e_email').value,
                 password: this.editForm.get('e_password').value,
                 status: this.editForm.get('e_status').value,
-                id_web: this.editForm.get('e_idWeb').value,
+                id_web: this.id,
                 id: this.editForm.get('e_id').value,
             }
             this._http.post(this.urlEditAccount, JSON.stringify(dataS), {

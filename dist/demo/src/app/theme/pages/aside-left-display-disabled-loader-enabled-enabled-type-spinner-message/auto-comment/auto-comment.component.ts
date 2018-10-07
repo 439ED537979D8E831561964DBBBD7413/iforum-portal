@@ -79,7 +79,7 @@ export class AutoCommentComponent implements OnInit {
         });
     }
     run() {
-        setInterval(()=> this.datatable.reload() ,5000);
+        setInterval(()=> this.datatable.reload() ,1500);
     }
 
     createAction() {
